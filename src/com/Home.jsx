@@ -69,7 +69,7 @@ const Home = () => {
         <div className="bottom-area">
           <div className="container">
             <button className="toggle-btn" onClick={toggleAnimation}>
-              <i className={`far  ${dark ? 'fa-sun' : 'fa-moon'}`}></i>
+              <i className={`far  ${dark ? 'fa-moon' : 'fa-moon'}`}></i>
             </button>
           </div>
         </div>
