@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import shape from '../assets/shape.png' 
 import person from '../assets/person.png' 
-import Logo from '../assets/logo (1).png' 
 
+import { Link } from 'react-router-dom';
 const Home = () => {
   const [dark, setDark] = useState(false);
   const [menuActive, setMenuActive] = useState(false);
@@ -20,28 +20,7 @@ const Home = () => {
       <div className={`big-wrapper ${dark ? 'dark' : 'light'} ${menuActive ? 'active' : ''}`}>
         <img src={shape} alt="" className="shape" />
 
-        <header>
-          <div className="container">
-            <div className="logo">
-              <img src={Logo} alt="Logo" />
-            </div>
-
-            <div className={`links ${menuActive ? 'active' : ''}`}>
-              <ul>
-                <li><a href="#">Features</a></li>
-                <li><a href="#">Pricing</a></li>
-                <li><a href="#">Testimonials</a></li>
-                <li><a href="#" className="btn">Sign up</a></li>
-              </ul>
-            </div>
-
-            <div className={`overlay ${menuActive ? 'active' : ''}`} onClick={hamburgerClick}></div>
-
-            <div className="hamburger-menu" onClick={hamburgerClick}>
-              <div className="bar"></div>
-            </div>
-          </div>
-        </header>
+        
 
         <div className="showcase-area">
           <div className="container">
