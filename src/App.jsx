@@ -1,4 +1,3 @@
-// App.jsx
 import React, { useState, useEffect } from "react"
 import { Routes, Route } from "react-router-dom"
 import Home from "./com/Home"
@@ -14,40 +13,22 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        setUser(authUser)
-      } else {
-        setUser(null)
-      }
+      setUser(authUser)
     })
 
     return () => unsubscribe()
   }, [])
-
-  console.log("user in App:", user)
-
-  const handleSignIn = (signedInUser) => {
-    setUser(signedInUser)
-  }
-
-  const handleGameSave = () => {
-    // You can perform any actions when a game is saved
-    console.log("Game saved")
-  }
 
   return (
     <>
       <Nav user={user} />
 
       <Routes>
-        <Route path="Teams" element={<Teams onGameSave={handleGameSave} />} />
+        <Route path="Teams" element={<Teams />} />
         <Route path="Home" element={<Home />} />
         <Route path="Savegames" element={<Savegames />} />
-        <Route path="Register" element={<Register onSignIn={handleSignIn} />} />
-        <Route
-          path="NewRegister"
-          element={<NewRegister onSignIn={handleSignIn} />}
-        />
+        <Route path="Register" element={<Register />} />
+        <Route path="NewRegister" element={<NewRegister />} />
       </Routes>
     </>
   )

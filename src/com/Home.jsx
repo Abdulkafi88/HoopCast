@@ -1,6 +1,7 @@
 import React from "react";
 import img1 from '../assets/nikola.png'
 import pg13 from '../assets/pg13new.jpg'
+import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <section class="container">
@@ -20,7 +21,7 @@ const Home = () => {
         </p>
         <form>
       
-          <button type="submit">Teams</button>
+          <button type="submit"><Link to={'/Teams'}>Teams</Link></button>
         </form>
       </div>
       <div class="image__container">

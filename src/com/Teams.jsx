@@ -1,7 +1,13 @@
-// Teams.jsx
 import React, { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { getDoc, doc, updateDoc } from "firebase/firestore"
+import {
+  getDoc,
+  doc,
+  updateDoc,
+  setDoc,
+  collection,
+  addDoc,
+} from "firebase/firestore"
 import { auth, db } from "../Firebase"
 
 const Teams = () => {
@@ -36,21 +42,22 @@ const Teams = () => {
         const savedGames = [...userDocSnap.data().savedGames, gameId]
 
         // Save the game details to the "games" collection
-        const gameDocRef = doc(db, "games", gameId)
-        await updateDoc(gameDocRef, {
+        const gamesCollection = collection(db, "games")
+        const gameDetails = nba[gameId]
+        await addDoc(gamesCollection, {
           team1: {
-            logo: nba[gameId].competitions[0].competitors[0].team.logo,
+            logo: gameDetails.competitions[0].competitors[0].team.logo,
             displayName:
-              nba[gameId].competitions[0].competitors[0].team.displayName,
-            score: nba[gameId].competitions[0].competitors[0].score,
+              gameDetails.competitions[0].competitors[0].team.displayName,
+            score: gameDetails.competitions[0].competitors[0].score,
           },
           team2: {
-            logo: nba[gameId].competitions[0].competitors[1].team.logo,
+            logo: gameDetails.competitions[0].competitors[1].team.logo,
             displayName:
-              nba[gameId].competitions[0].competitors[1].team.displayName,
-            score: nba[gameId].competitions[0].competitors[1].score,
+              gameDetails.competitions[0].competitors[1].team.displayName,
+            score: gameDetails.competitions[0].competitors[1].score,
           },
-          date: nba[gameId].date,
+          date: gameDetails.date,
         })
 
         // Update the user's savedGames array
@@ -59,7 +66,7 @@ const Teams = () => {
         })
 
         // After saving the game, navigate to the Savegames route
-        navigate("/Savegames")
+        navigate("/savegames")
       }
     } catch (error) {
       console.error("Error saving game:", error.message)
@@ -120,6 +127,7 @@ const Teams = () => {
               onClick={() =>
                 auth.currentUser && handleSaveGame(auth.currentUser.uid, index)
               }
+              disabled={!auth.currentUser}
             >
               Save Games
             </button>
@@ -131,4 +139,3 @@ const Teams = () => {
 }
 
 export default Teams
-    
