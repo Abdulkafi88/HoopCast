@@ -1,33 +1,34 @@
 import React , {useState} from 'react'
 import {Link , useNavigate} from 'react-router-dom'
-import { auth } from "../Firebase"
-import { signInWithEmailAndPassword } from "firebase/auth"
-const Register = ({ onSignIn }) => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const navigate = useNavigate()
-  const handleLogin = async (e) => {
-    e.preventDefault()
+import { auth } from '../Firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password,
-        navigate('/Home')
-      )
-      onSignIn(userCredential.user)
-      console.log("User logged in:", userCredential.user)
-    } catch (error) {
-      console.error("Error during login:", error.message)
+const NewRegister = ({ onSignIn}) => {
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const navigate = useNavigate()
+    const handleSignup = async (e) => {
+      e.preventDefault()
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password , 
+          navigate('/Home')
+        )
+        onSignIn(userCredential.user)
+        console.log("User signed up:", userCredential.user)
+      } catch (error) {
+        console.error("Error during signup:", error.message)
+      }
     }
-  }
   return (
     <React.Fragment>
       <div className="login-container">
-        <form className="login-form" onSubmit={handleLogin}>
-          <h1>Welcome Back</h1>
-          <p>Please login to your account</p>
+        <form className="login-form" onSubmit={handleSignup}>
+          <h1>Welcome </h1>
+          <p>Please Sign up</p>
           <div className="input-group">
             <input
               type="text"
@@ -53,7 +54,7 @@ const Register = ({ onSignIn }) => {
           <button type="submit">Login</button>
           <div className="bottom-text">
             <p>
-              Don't have an account? <Link to={"/NewRegister"}>Sign Up</Link>
+              have an account? <Link to={"/Register"}>Login</Link>
             </p>
           </div>
         </form>
@@ -62,4 +63,4 @@ const Register = ({ onSignIn }) => {
   )
 }
 
-export default Register
+export default NewRegister

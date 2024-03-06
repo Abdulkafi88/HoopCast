@@ -6,21 +6,21 @@ const Home = () => {
     <section class="container">
       <div class="content__container">
         <h1>
-          Best Learning
+          Love Basketball?
           <br />
-          <span class="heading__1">Education Platform</span>
+          <span class="heading__1">Stay in the Game</span>
           <br />
-          <span class="heading__2">in The World</span>
+          <span class="heading__2">with Our Latest NBA News Updates! 🏀🔥</span>
         </h1>
         <p>
-          Unlock your full learning potential with our intuitive education
-          platform. Seamlessly blending technology and education, we provide an
-          immersive learning environment that combines interactive lessons,
-          virtual classrooms, and intelligent feedback.
+          Dunk into the Action: Your Daily Slam of NBA Thrills, Sizzling Trades,
+          and Unstoppable Triumphs! Elevate your Hoops IQ with our Exclusive
+          Insights, Player Spotlights, and Behind-the-Scenes Buzz. Don't just
+          follow the game, immerse yourself in it! 🏀🔥
         </p>
         <form>
-          <input type="text" placeholder="What do you want to learn" />
-          <button type="submit">Search Course</button>
+      
+          <button type="submit">Teams</button>
         </form>
       </div>
       <div class="image__container">
@@ -28,13 +28,13 @@ const Home = () => {
         <img src={pg13} alt="header" />
         <div class="image__content">
           <ul>
-            <li>Get 30% off on every 1st month</li>
-            <li>Expert teachers</li>
+            <li>Daily NBA Scoop! 🏀📰</li>
+            <li>Your Quick Fix for NBA News! 🏀🚀 </li>
           </ul>
         </div>
       </div>
     </section>
-  );
+  )
 };
 
 export default Home;
