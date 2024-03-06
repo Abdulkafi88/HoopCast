@@ -6,6 +6,7 @@ import { Routes, Route,} from "react-router-dom"
 import Home from './com/Home'
 import Nav from './com/Nav'
 import Teams from './com/Teams'
+import Register from './com/Register'
 function App() {
 
 
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="Teams" element={<Teams />}></Route>
         <Route path="Home" element={<Home />}></Route>
+        <Route path="Register" element={<Register />}></Route>
       </Routes>
     </>
   )

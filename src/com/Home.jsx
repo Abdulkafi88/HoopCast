@@ -1,59 +1,39 @@
-import React, { useState } from 'react';
-import shape from '../assets/shape.png' 
-import person from '../assets/person.png' 
-
-import { Link } from 'react-router-dom';
+import React from "react";
+import img1 from '../assets/nikola.png'
+import pg13 from '../assets/pg13new.jpg'
 const Home = () => {
-  const [dark, setDark] = useState(false);
-  const [menuActive, setMenuActive] = useState(false);
-
-  const toggleAnimation = () => {
-    setDark((prevDark) => !prevDark);
-  };
-
-  const hamburgerClick = () => {
-    setMenuActive((prevMenuActive) => !prevMenuActive);
-  };
-
   return (
-    <main>
-      <div className={`big-wrapper ${dark ? 'dark' : 'light'} ${menuActive ? 'active' : ''}`}>
-        <img src={shape} alt="" className="shape" />
-
-        
-
-        <div className="showcase-area">
-          <div className="container">
-            <div className="left">
-              <div className="big-title">
-                <h1>Future is here,</h1>
-                <h1>Start Exploring now.</h1>
-              </div>
-              <p className="text">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Delectus eius distinctio odit, magni magnam qui ex perferendis
-                vitae!
-              </p>
-              <div className="cta">
-                <a href="#" className="btn">Get started</a>
-              </div>
-            </div>
-
-            <div className="right">
-              <img src={person} alt="Person Image" className="person" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bottom-area">
-          <div className="container">
-            <button className="toggle-btn" onClick={toggleAnimation}>
-              <i className={`far  ${dark ? 'fa-moon' : 'fa-moon'}`}></i>
-            </button>
-          </div>
+    <section class="container">
+      <div class="content__container">
+        <h1>
+          Best Learning
+          <br />
+          <span class="heading__1">Education Platform</span>
+          <br />
+          <span class="heading__2">in The World</span>
+        </h1>
+        <p>
+          Unlock your full learning potential with our intuitive education
+          platform. Seamlessly blending technology and education, we provide an
+          immersive learning environment that combines interactive lessons,
+          virtual classrooms, and intelligent feedback.
+        </p>
+        <form>
+          <input type="text" placeholder="What do you want to learn" />
+          <button type="submit">Search Course</button>
+        </form>
+      </div>
+      <div class="image__container">
+        <img src={img1} alt="header" />
+        <img src={pg13} alt="header" />
+        <div class="image__content">
+          <ul>
+            <li>Get 30% off on every 1st month</li>
+            <li>Expert teachers</li>
+          </ul>
         </div>
       </div>
-    </main>
+    </section>
   );
 };
 
