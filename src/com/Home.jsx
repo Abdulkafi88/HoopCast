@@ -14,10 +14,9 @@ const Home = () => {
           <span class="heading__2">with Our Latest NBA News Updates! 🏀🔥</span>
         </h1>
         <p>
-          Dunk into the Action: Your Daily Slam of NBA Thrills, Sizzling Trades,
-          and Unstoppable Triumphs! Elevate your Hoops IQ with our Exclusive
-          Insights, Player Spotlights, and Behind-the-Scenes Buzz. Don't just
-          follow the game, immerse yourself in it! 🏀🔥
+        Catch every slam dunk and clutch shot live!
+        Our website keeps you on the edge of your seat with up-to-the-minute NBA game updates.
+        Click below to dive into the excitement and stay ahead of the game🏀🔥
         </p>
         <form>
       
@@ -29,8 +28,8 @@ const Home = () => {
         <img src={pg13} alt="header" />
         <div class="image__content">
           <ul>
-            <li>Daily NBA Scoop! 🏀📰</li>
-            <li>Your Quick Fix for NBA News! 🏀🚀 </li>
+            <li>Daily NBA Games! 🏀📰</li>
+            <li>Your Quick Live Scores! 🏀🚀 </li>
           </ul>
         </div>
       </div>

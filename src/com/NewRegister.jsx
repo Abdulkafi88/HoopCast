@@ -1,28 +1,28 @@
-import React , {useState} from 'react'
-import {Link , useNavigate} from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { auth } from '../Firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
-const NewRegister = ({ onSignIn}) => {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const navigate = useNavigate()
-    const handleSignup = async (e) => {
-      e.preventDefault()
+const NewRegister = ({ onSignIn }) => {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const navigate = useNavigate()
+  const handleSignup = async (e) => {
+    e.preventDefault()
 
-      try {
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password , 
-          navigate('/Home')
-        )
-        onSignIn(userCredential.user)
-        console.log("User signed up:", userCredential.user)
-      } catch (error) {
-        console.error("Error during signup:", error.message)
-      }
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      )
+      navigate('/Home')
+      // onSignIn(userCredential.user)
+      console.log("User signed up:", userCredential.user)
+    } catch (error) {
+      console.error("Error during signup:", error.message)
     }
+  }
   return (
     <React.Fragment>
       <div className="login-container">
