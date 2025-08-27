@@ -1,37 +1,13 @@
-// import { defineConfig } from 'vite'
-// import react from '@vitejs/plugin-react'
-
-// // https://vitejs.dev/config/
-// export default defineConfig({
-//   plugins: [react()],
-// })
-
-
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { gameDetailsFrom, transformGames } from './src/utils/transform';
 
 export default defineConfig({
-  base: '/HoopCast/',   
+  base: '/HoopCast/',
   plugins: [react()],
-})
+});
 
-const gameDetails = {
-  season: game.season,
-  uid: game.uid,
-  userId,
-  docId
-};
+// Example usage of the utility functions
+const gameDetails = gameDetailsFrom(game, userId, docId);
 
-const transformedArray = arr.map(({ game, userId, docId }) => ({
-  name: game.name,
-  competitions: game.competitions,
-  links: game.links,
-  status: game.status,
-  shortName: game.shortName,
-  userId, // Keep only one userId
-  date: game.date,
-  id: game.id,
-  season: game.season,
-  uid: game.uid,
-  docId
-}));
+const transformedArray = transformGames(arr);
