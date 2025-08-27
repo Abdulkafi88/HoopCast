@@ -10,7 +10,7 @@ const Nav = ({ user }) => {
   }
   return (
     <nav>
-      <div class="nav__logo"><Link to={'Home'}>Live Nba Scores</Link></div>
+      <div class="nav__logo"><Link to={'Home'}>HoopCast</Link></div>
       <ul class="nav__links">
         <li class="link"><Link to={'Home'}>Home</Link></li>
         <li class="link"><Link to={'Teams'}>Teams</Link></li>

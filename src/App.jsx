@@ -1,29 +1,30 @@
-import React, { useState, useEffect } from "react"
-import { Routes, Route } from "react-router-dom"
-import Home from "./com/Home"
-import Nav from "./com/Nav"
-import Teams from "./com/Teams"
-import Register from "./com/Register"
-import NewRegister from "./com/NewRegister"
-import Savegames from "./com/Savegames"
-import { auth } from "./Firebase"
+import React, { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom"; // Import Navigate
+import Home from "./com/Home";
+import Nav from "./com/Nav";
+import Teams from "./com/Teams";
+import Register from "./com/Register";
+import NewRegister from "./com/NewRegister";
+import Savegames from "./com/Savegames";
+import { auth } from "./Firebase";
 
 function App() {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      setUser(authUser)
-    })
+      setUser(authUser);
+    });
 
-    return () => unsubscribe()
-  }, [])
+    return () => unsubscribe();
+  }, []);
 
   return (
     <>
       <Nav user={user} />
 
       <Routes>
+        <Route path="/" element={<Navigate to="/Home" />} /> {/* Default route */}
         <Route path="Teams" element={<Teams />} />
         <Route path="Home" element={<Home />} />
         <Route path="Savegames" element={<Savegames />} />
@@ -31,7 +32,7 @@ function App() {
         <Route path="NewRegister" element={<NewRegister />} />
       </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

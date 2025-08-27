@@ -456,6 +456,105 @@ button:hover {
     transform: rotate(180deg);
 }
 
+.get-info {
+  text-decoration: none; /* Removes underline */
+  color: white; /* Makes the text white */
+  padding: 0.5rem 1rem; /* Adds padding */
+  background-color: var(--primary-color); /* Optional: Add a background color */
+  border: none; /* Removes default button border */
+  border-radius: 5px; /* Adds rounded corners */
+  cursor: pointer; /* Changes cursor to pointer */
+}
 
+.get-info a {
+  text-decoration: none; /* Ensures the link inside has no underline */
+  color: inherit; /* Inherits the white color from the parent */
+}
 
+/* General styles for larger screens (default) */
+.container {
+  max-width: var(--max-width);
+  margin: auto;
+  padding: 1rem;
+  min-height: calc(100vh - 100px);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5rem;
+}
 
+.image__container img {
+  width: 100%;
+  max-width: 300px;
+  margin: auto;
+  border-radius: 10px;
+}
+
+/* Responsive styles for smaller screens */
+@media screen and (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr; /* Single column layout */
+    padding: 1rem;
+  }
+
+  .content__container {
+    text-align: center; /* Center-align content */
+  }
+
+  .image__container {
+    grid-area: 1/1/2/2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .image__container img {
+    max-width: 200px; /* Reduce image size */
+    margin-bottom: 1rem;
+  }
+
+  nav {
+    flex-direction: column; /* Stack navigation links */
+    align-items: center;
+  }
+
+  .nav__links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .link a {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .login-container {
+    width: 100%;
+    border-radius: 0;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+
+  .login-form {
+    padding: 1rem;
+  }
+
+  .login-form h1 {
+    font-size: 1.5rem;
+  }
+
+  .login-form p {
+    font-size: 0.9rem;
+  }
+
+  .input-group input {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  button {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+}

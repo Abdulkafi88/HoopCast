@@ -51,7 +51,7 @@ const NewRegister = ({ onSignIn }) => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="submit">Login</button>
+          <button type="submit">Sign Up</button>
           <div className="bottom-text">
             <p>
               have an account? <Link to={"/Register"}>Login</Link>
