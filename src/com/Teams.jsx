@@ -33,70 +33,21 @@ const Teams = () => {
     getTeamInfo()
   }, [])
 
-  const handleSaveGame = async (userId, gameId) => {
-    console.log("team puri", gameId)
-
-
+  const handleSaveGame = async (game) => {
     try {
-
       if (auth.currentUser) {
         await addDoc(collection(db, "games"), {
-          game: gameId,
-          userId: auth.currentUser?.uid
-        }).then(() => {
-          console.log('Game saved')
-          navigate("/savegames")
-
-        })
+          game, // Save the entire game object
+          userId: auth.currentUser.uid,
+        });
+        console.log("Game saved successfully");
+      } else {
+        console.error("No authenticated user found.");
       }
-
     } catch (error) {
-      console.error("Error saving game:", error.message)
-
+      console.error("Error saving game:", error.message);
     }
-    // try {
-    //   console.log(userId)
-    //   console.log(gameId)
-    //   const userDocRef = doc(db, "users", userId)
-    //   const userDocSnap = await getDoc(userDocRef)
-
-
-
-
-    //   if (userDocSnap.exists()) {
-    //     const savedGames = [...userDocSnap.data().savedGames, gameId]
-
-    //     // Save the game details to the "games" collection
-    //     const gamesCollection = collection(db, "games")
-    //     const gameDetails = nba[gameId]
-    //     await addDoc(gamesCollection, {
-    //       team1: {
-    //         logo: gameDetails.competitions[0].competitors[0].team.logo,
-    //         displayName:
-    //           gameDetails.competitions[0].competitors[0].team.displayName,
-    //         score: gameDetails.competitions[0].competitors[0].score,
-    //       },
-    //       team2: {
-    //         logo: gameDetails.competitions[0].competitors[1].team.logo,
-    //         displayName:
-    //           gameDetails.competitions[0].competitors[1].team.displayName,
-    //         score: gameDetails.competitions[0].competitors[1].score,
-    //       },
-    //       date: gameDetails.date,
-    //     })
-
-    //     // Update the user's savedGames array
-    //     await updateDoc(userDocRef, {
-    //       savedGames,
-    //     })
-
-    //     // After saving the game, navigate to the Savegames route
-    //     navigate("/savegames")
-    //   }
-    // } catch (error) {
-    //   console.error("Error saving game:", error.message)
-    // }
-  }
+  };
 
   const getMonthAndDate = (isoDate) => {
     const dateObj = new Date(isoDate)
@@ -152,7 +103,7 @@ const Teams = () => {
             </div>
             <button
               onClick={() =>
-                auth.currentUser && handleSaveGame(auth.currentUser.uid, teams)
+                auth.currentUser && handleSaveGame(teams)
               }
               disabled={!auth.currentUser}
             >

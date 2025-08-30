@@ -7,64 +7,31 @@ const Savegames = () => {
   const [savedGames, setSavedGames] = useState([])
 
   useEffect(() => {
-
-
     fetchSavedGames()
   }, [])
 
   const fetchSavedGames = async () => {
     try {
-      // Check if auth.currentUser is defined
       if (auth.currentUser) {
-        // const userDocRef = doc(db, "users", auth.currentUser.uid)
-        // const userDocSnap = await getDoc(userDocRef)
-
-        // const saveddocRef = collection(db, "games")
-        // const saveddocSnap = await getDoc(saveddocRef)
-
-        // console.log(saveddocSnap)
-
-        // console.log()
-        // if (userDocSnap.exists()) {
-        //   setSavedGames(userDocSnap.data().savedGames || [])
-        // }
-        const q = query(collection(db, "games"), where("userId", "==", auth.currentUser?.uid));
-
+        const q = query(
+          collection(db, "games"),
+          where("userId", "==", auth.currentUser?.uid)
+        );
         const querySnapshot = await getDocs(q);
-        let arr = []
+
+        let arr = [];
         querySnapshot.forEach((doc) => {
-          // doc.data() is never undefined for query doc snapshots
-
-          // const data = doc.data()
-          // data['key'] = doc.id
           let value = doc.data();
-          value.docId = doc.id;
-
-          arr.push(value)
+          value.docId = doc.id; // Add the document ID for removal functionality
+          arr.push(value.game); // Push only the `game` property
         });
-        console.log(arr)
 
-        const transformedArray = arr.map(({ game, userId, docId }) => ({
-          name: game.name,
-          competitions: game.competitions,
-          links: game.links,
-          status: game.status,
-          shortName: game.shortName,
-          userId: userId,
-          date: game.date,
-          id: game.id,
-          season: game.season,
-          uid: game.uid,
-          userId,
-          docId
-        }));
-
-        console.log('new arry', transformedArray)
-
-        setSavedGames(transformedArray)
+        setSavedGames(arr); // Set the fetched games
+      } else {
+        console.error("No authenticated user found.");
       }
     } catch (error) {
-      console.error("Error fetching saved games:", error.message)
+      console.error("Error fetching saved games:", error.message);
     }
   }
 
@@ -149,8 +116,6 @@ const Savegames = () => {
     return null
   }
 
-
-
   const removeFromSaved = async (docid) => {
     try {
       await deleteDoc(doc(db, "games", docid)).then(() => {
@@ -163,69 +128,54 @@ const Savegames = () => {
     }
   }
 
-
   console.log("saved games==>", savedGames)
 
   return (
     <div className="content-holders">
-      {/* <div className="matchs" id="match-date">
-        {savedGames.map((gameId, index) => renderGameDetails(gameId, index))}
-      </div> */}
       <Link to="/teams" className="back-link">
         Back to Teams
       </Link>
       <div className="matchs" id="match-date">
-
-        {savedGames.map((teams, index) => (
-          <div className="match" key={index}>
-            <div className="flags">
-              <div className="home-flag">
-                <img
-                  className="flag"
-                  src={teams.competitions[0].competitors[0].team.logo}
-                  alt={`${teams.competitions[0].competitors[0].team.displayName} Logo`}
-                />
-                <h3 className="home-team">
-                  {teams.competitions[0].competitors[0].team.displayName}
-                </h3>
-                <p className="score">
-                  {teams.competitions[0].competitors[0].score}
-                </p>
+        {savedGames.length > 0 ? (
+          savedGames.map((gameDetails, index) => (
+            <div className="match" key={index}>
+              <div className="flags">
+                <div className="home-flag">
+                  <img
+                    className="flag"
+                    src={gameDetails.competitions[0].competitors[0].team.logo}
+                    alt={`${gameDetails.competitions[0].competitors[0].team.displayName} Logo`}
+                  />
+                  <h3 className="home-team">
+                    {gameDetails.competitions[0].competitors[0].team.displayName}
+                  </h3>
+                  <p className="score">
+                    {gameDetails.competitions[0].competitors[0].score}
+                  </p>
+                </div>
+                <span className="vs">vs</span>
+                <div className="away-flag">
+                  <img
+                    className="flag"
+                    src={gameDetails.competitions[0].competitors[1].team.logo}
+                    alt={`${gameDetails.competitions[0].competitors[1].team.displayName} Logo`}
+                  />
+                  <h3 className="away-team">
+                    {gameDetails.competitions[0].competitors[1].team.displayName}
+                  </h3>
+                  <p className="score">
+                    {gameDetails.competitions[0].competitors[1].score}
+                  </p>
+                </div>
               </div>
-              <span className="vs">vs</span>
-              <div className="away-flag">
-                <img
-                  className="flag"
-                  src={teams.competitions[0].competitors[1].team.logo}
-                  alt={`${teams.competitions[0].competitors[1].team.displayName} Logo`}
-                />
-                <h3 className="home-team">
-                  {teams.competitions[0].competitors[1].team.displayName}
-                </h3>
-                <p className="score">
-                  {teams.competitions[0].competitors[1].score}
-                </p>
+              <div className="time-area">
+                <h4 className="match-time">{gameDetails.date.slice(11, 16)}</h4>
               </div>
             </div>
-            <div className="time-area">
-              <div className="time">
-                <h4 className="month">{getMonthAndDate(teams.date).month}</h4>
-                <h4 className="day">{getMonthAndDate(teams.date).day}</h4>
-                <h4 className="date">{getMonthAndDate(teams.date).date}</h4>
-              </div>
-              <h4 className="match-time">{teams.date.slice(11, 16)}</h4>
-            </div>
-            <button
-              style={{ backgroundColor: 'red' }}
-              onClick={() =>
-                auth.currentUser && removeFromSaved(teams.docId)
-              }
-              disabled={!auth.currentUser}
-            >
-              Remove Game
-            </button>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>No saved games found.</p>
+        )}
       </div>
     </div>
   )
