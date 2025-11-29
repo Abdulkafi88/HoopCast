@@ -99,7 +99,14 @@ const Teams = () => {
                 <h4 className="day">{getMonthAndDate(teams.date).day}</h4>
                 <h4 className="date">{getMonthAndDate(teams.date).date}</h4>
               </div>
-              <h4 className="match-time">{teams.date.slice(11, 16)}</h4>
+              
+              <h4 className="match-time">
+               {new Date(teams.date).toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true
+              })}
+              </h4>
             </div>
             <button
               onClick={() =>

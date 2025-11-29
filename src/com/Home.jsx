@@ -17,9 +17,8 @@ import { Link } from "react-router-dom"; const Home = () => {
         Click below to dive into the excitement and stay ahead of the game🏀🔥
         </p>
         <form>
-          <button className="get-info" type="submit">
-            <Link to={'/Teams'}>Teams</Link>
-          </button>
+          
+            <Link to={'/Teams'} className="get-info">Teams</Link>
         </form>
       </div>
       <div className="image__container">

@@ -466,10 +466,6 @@ button:hover {
   cursor: pointer; /* Changes cursor to pointer */
 }
 
-.get-info a {
-  text-decoration: none; /* Ensures the link inside has no underline */
-  color: inherit; /* Inherits the white color from the parent */
-}
 
 /* General styles for larger screens (default) */
 .container {
