@@ -7,24 +7,26 @@ import { signInWithEmailAndPassword } from "firebase/auth"
 const Register = ({ onSignIn }) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
   const navigate = useNavigate()
-
 
   const handleLogin = async (e) => {
     e.preventDefault()
+    setError("")
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      )
-      navigate('/Home')
-      // onSignIn(userCredential.user)
-
-      console.log("User logged in:", userCredential.user)
-    } catch (error) {
-      console.error("Error during login:", error.message)
+      await signInWithEmailAndPassword(auth, email, password)
+      navigate('/home')
+    } catch (err) {
+      if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password") {
+        setError("Incorrect email or password.")
+      } else if (err.code === "auth/user-not-found") {
+        setError("No account found with this email.")
+      } else if (err.code === "auth/too-many-requests") {
+        setError("Too many attempts. Please try again later.")
+      } else {
+        setError("Login failed. Please try again.")
+      }
     }
   }
   return (
@@ -55,10 +57,11 @@ const Register = ({ onSignIn }) => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          {error && <p style={{ color: "red", marginBottom: "1rem", fontSize: "0.9rem" }}>{error}</p>}
           <button type="submit">Login</button>
           <div className="bottom-text">
             <p>
-              Don't have an account? <Link to={"/NewRegister"}>Sign Up</Link>
+              Don't have an account? <Link to={"/newregister"}>Sign Up</Link>
             </p>
           </div>
         </form>

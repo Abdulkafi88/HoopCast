@@ -6,21 +6,31 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 const NewRegister = ({ onSignIn }) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
   const navigate = useNavigate()
+
   const handleSignup = async (e) => {
     e.preventDefault()
+    setError("")
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.")
+      return
+    }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      )
-      navigate('/Home')
-      // onSignIn(userCredential.user)
-      console.log("User signed up:", userCredential.user)
-    } catch (error) {
-      console.error("Error during signup:", error.message)
+      await createUserWithEmailAndPassword(auth, email, password)
+      navigate('/home')
+    } catch (err) {
+      if (err.code === "auth/email-already-in-use") {
+        setError("An account with this email already exists.")
+      } else if (err.code === "auth/invalid-email") {
+        setError("Please enter a valid email address.")
+      } else if (err.code === "auth/weak-password") {
+        setError("Password must be at least 6 characters.")
+      } else {
+        setError("Sign up failed. Please try again.")
+      }
     }
   }
   return (
@@ -51,10 +61,11 @@ const NewRegister = ({ onSignIn }) => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          {error && <p style={{ color: "red", marginBottom: "1rem", fontSize: "0.9rem" }}>{error}</p>}
           <button type="submit">Sign Up</button>
           <div className="bottom-text">
             <p>
-              have an account? <Link to={"/Register"}>Login</Link>
+              have an account? <Link to={"/register"}>Login</Link>
             </p>
           </div>
         </form>
