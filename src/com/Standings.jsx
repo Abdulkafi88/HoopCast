@@ -16,7 +16,7 @@ const Standings = () => {
     const fetchStandings = async () => {
       try {
         const res = await fetch(
-          "https://site.web.api.espn.com/apis/v2/sports/basketball/nba/standings?region=us&lang=en&contentorigin=espn&type=0&level=1&sort=gamesbehind%3Aasc&season=2025"
+          "https://site.web.api.espn.com/apis/v2/sports/basketball/nba/standings?region=us&lang=en&contentorigin=espn&type=0&level=1&sort=gamesbehind%3Aasc&season=2026"
         )
         const data = await res.json()
         const entries = data?.standings?.entries ?? []
@@ -58,7 +58,7 @@ const Standings = () => {
   return (
     <div className="content-holders">
       <div className="standings-header">
-        <h2 className="standings-title">NBA Standings 2024-25</h2>
+        <h2 className="standings-title">NBA Standings 2025-26</h2>
         <div className="conf-tabs">
           {["all", "east", "west"].map((c) => (
             <button

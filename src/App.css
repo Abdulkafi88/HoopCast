@@ -2849,6 +2849,39 @@ button:hover {
   .onboarding-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
+/* ===== SEARCH DATE GROUPS ===== */
+.search-date-group {
+  margin-bottom: 2rem;
+}
+
+.search-date-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid rgba(92,72,238,0.15);
+}
+
+.search-date-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.search-date-tag.past { background: #e2e8f0; color: #555; }
+.search-date-tag.today { background: #5c48ee; color: #fff; }
+.search-date-tag.upcoming { background: #c6f6d5; color: #276749; }
+
+[data-theme="dark"] .search-date-label { border-bottom-color: rgba(129,140,248,0.2); }
+[data-theme="dark"] .search-date-tag.past { background: rgba(255,255,255,0.1); color: #aaa; }
+[data-theme="dark"] .search-date-tag.upcoming { background: rgba(56,161,105,0.2); color: #68d391; }
+
 /* ===== DATE STRIP ===== */
 .date-strip {
   display: flex;

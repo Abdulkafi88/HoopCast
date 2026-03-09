@@ -63,7 +63,7 @@ const TeamDetail = () => {
 
   return (
     <div className="content-holders team-detail-page">
-      <Link to="/teams" className="back-link">← Back to Games</Link>
+      <Link to="/teams" className="back-link">← Back to Teams</Link>
 
       {/* Hero */}
       <div className="team-hero" style={{ background: `linear-gradient(135deg, ${teamColor}cc, #0f1e6a)` }}>

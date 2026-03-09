@@ -64,17 +64,20 @@ const GlobalSearch = () => {
       if (val.length < 3) return
       setLoading(true)
       try {
-        // Search through multiple team rosters for the player name
-        const teamId = Math.floor(Math.random() * 30) + 1
-        const res = await fetch(
-          `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/${teamId}/roster`
+        const teamIds = Array.from({ length: 30 }, (_, i) => i + 1)
+        const responses = await Promise.all(
+          teamIds.map((id) =>
+            fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/${id}/roster`)
+              .then((r) => r.json())
+              .catch(() => ({ athletes: [] }))
+          )
         )
-        const data = await res.json()
-        const players = (data.athletes ?? [])
+        const allPlayers = responses.flatMap((data) => data.athletes ?? [])
+        const players = allPlayers
           .filter((p) => p.fullName.toLowerCase().includes(val.toLowerCase()))
-          .slice(0, 3)
+          .slice(0, 5)
           .map((p) => ({ type: "player", id: p.id, name: p.fullName, player: p }))
-        setResults((prev) => [...teamMatches, ...players])
+        setResults([...teamMatches, ...players])
       } catch (err) {}
       setLoading(false)
     }, 400)

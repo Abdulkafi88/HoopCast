@@ -133,7 +133,7 @@ const PlayerDetail = () => {
         <>
           {season.length > 0 && (
             <div className="pd-stats-section">
-              <h2 className="pd-stats-title">2024-25 Season Averages</h2>
+              <h2 className="pd-stats-title">2025-26 Season Averages</h2>
               <div className="pd-stats-grid">
                 <StatCard label="Games" value={getVal(season, "GP")} />
                 <StatCard label="Points" value={getVal(season, "PTS")} />
