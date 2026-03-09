@@ -78,10 +78,17 @@ const GlobalSearch = () => {
           .slice(0, 5)
           .map((p) => ({ type: "player", id: p.id, name: p.fullName, player: p }))
         setResults([...teamMatches, ...players])
-      } catch (err) {}
+      } catch (err) {
+        console.error("Player search failed:", err)
+      }
       setLoading(false)
     }, 400)
   }
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => clearTimeout(debounceRef.current)
+  }, [])
 
   const handleSelect = (item) => {
     setQuery("")

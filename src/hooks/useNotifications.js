@@ -34,7 +34,9 @@ const useNotifications = () => {
             })
           }
         })
-      } catch (err) {}
+      } catch (err) {
+        console.error("Notification check failed:", err)
+      }
     }
 
     checkGames()

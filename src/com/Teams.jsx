@@ -39,9 +39,12 @@ const fetchDayGames = async (date) => {
   }
 }
 
+const TODAY = new Date()
+const DATE_RANGE = buildDateRange()
+
 const Teams = () => {
-  const today = new Date()
-  const dateRange = buildDateRange()
+  const today = TODAY
+  const dateRange = DATE_RANGE
 
   const [selectedDate, setSelectedDate] = useState(today)
   const [nba, setNba] = useState([])
@@ -131,6 +134,7 @@ const Teams = () => {
       setSearchResults(results.filter((r) => r.games.length > 0))
       setSearchLoading(false)
     }, 400)
+    return () => clearTimeout(searchDebounceRef.current)
   }, [search])
 
   const handleSaveGame = async (game) => {

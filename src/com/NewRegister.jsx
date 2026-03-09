@@ -65,7 +65,7 @@ const NewRegister = ({ onSignIn }) => {
           <button type="submit">Sign Up</button>
           <div className="bottom-text">
             <p>
-              have an account? <Link to={"/register"}>Login</Link>
+              Already have an account? <Link to={"/register"}>Login</Link>
             </p>
           </div>
         </form>
