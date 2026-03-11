@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react"
-import img1 from '../assets/nikola.png'
-import pg13 from '../assets/pg-13.png'
 import { Link } from "react-router-dom"
 
 const Home = () => {
@@ -36,14 +34,24 @@ const Home = () => {
           </p>
           <Link to={'/teams'} className="get-info">View Today's Games</Link>
         </div>
-        <div className="image__container">
-          <img src={img1} alt="header" />
-          <img src={pg13} alt="header" />
-          <div className="image__content">
-            <ul>
-              <li>Daily NBA Games! 🏀📰</li>
-              <li>Your Quick Live Scores! 🏀🚀</li>
-            </ul>
+        <div className="hero__visual">
+          <div className="hero__visual-ring hero__visual-ring--1"></div>
+          <div className="hero__visual-ring hero__visual-ring--2"></div>
+          <div className="hero__visual-ring hero__visual-ring--3"></div>
+          <div className="hero__visual-ball">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="48" fill="#c1440e" stroke="#8B3000" strokeWidth="2"/>
+              <path d="M2 50 Q98 50 98 50" stroke="#8B3000" strokeWidth="2.5" fill="none"/>
+              <path d="M50 2 Q50 98 50 98" stroke="#8B3000" strokeWidth="2.5" fill="none"/>
+              <path d="M2 50 Q20 20 50 2" stroke="#8B3000" strokeWidth="2.5" fill="none"/>
+              <path d="M2 50 Q20 80 50 98" stroke="#8B3000" strokeWidth="2.5" fill="none"/>
+              <path d="M98 50 Q80 20 50 2" stroke="#8B3000" strokeWidth="2.5" fill="none"/>
+              <path d="M98 50 Q80 80 50 98" stroke="#8B3000" strokeWidth="2.5" fill="none"/>
+            </svg>
+          </div>
+          <div className="hero__visual-dots">
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
           </div>
         </div>
       </section>
