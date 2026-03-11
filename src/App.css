@@ -73,10 +73,15 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   background-color: var(--secondary-color);
   animation: fadeIn 0.4s ease;
+  overflow-x: hidden;
 }
 
 nav {
@@ -156,6 +161,7 @@ nav {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 5rem;
+  overflow: hidden;
 }
 
 .content__container {
@@ -271,6 +277,9 @@ nav {
   align-items: center;
   justify-content: center;
   min-height: 380px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
 .hero__visual-ring {
@@ -281,20 +290,20 @@ nav {
 }
 
 .hero__visual-ring--1 {
-  width: 180px;
-  height: 180px;
+  width: min(180px, 45%);
+  height: min(180px, 45%);
   animation-delay: 0s;
 }
 
 .hero__visual-ring--2 {
-  width: 280px;
-  height: 280px;
+  width: min(280px, 70%);
+  height: min(280px, 70%);
   animation-delay: 1s;
 }
 
 .hero__visual-ring--3 {
-  width: 380px;
-  height: 380px;
+  width: min(360px, 90%);
+  height: min(360px, 90%);
   animation-delay: 2s;
 }
 
@@ -428,7 +437,7 @@ nav {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    width: 100%;
+    width: auto;
     padding: 0.75rem 1rem;
     background: rgba(92,72,238,0.08);
     border: 1.5px solid rgba(92,72,238,0.2);
@@ -1559,12 +1568,11 @@ button:hover {
 }
 
 .dark-toggle:hover {
-  transform: rotate(20deg) scale(1.2);
+  transform: scale(1.1);
 }
 
 .dark-toggle:active {
   transform: scale(0.9);
-  animation: spin 0.3s ease;
 }
 
 /* ===== PAGE TRANSITION ANIMATION ===== */
