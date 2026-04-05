@@ -12,10 +12,3 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
-
-const loader = document.getElementById("app-loader");
-if (loader) {
-  loader.style.transition = "opacity 0.4s ease";
-  loader.style.opacity = "0";
-  setTimeout(() => loader.remove(), 400);
-}

@@ -168,6 +168,13 @@ const Teams = () => {
     return home.includes(search.toLowerCase()) || away.includes(search.toLowerCase())
   })
 
+  const getStatusOrder = (game) => {
+    const statusName = game.competitions?.[0]?.status?.type?.name
+    if (statusName === "STATUS_IN_PROGRESS") return 0
+    if (statusName === "STATUS_FINAL") return 2
+    return 1 // UPCOMING
+  }
+
   const sortedGames = [...filteredGames].sort((a, b) => {
     const aHasFav = [
       a.competitions[0].competitors[0].team.displayName,
@@ -177,7 +184,8 @@ const Teams = () => {
       b.competitions[0].competitors[0].team.displayName,
       b.competitions[0].competitors[1].team.displayName,
     ].includes(favoriteTeam)
-    return bHasFav - aHasFav
+    if (bHasFav !== aHasFav) return bHasFav - aHasFav
+    return getStatusOrder(a) - getStatusOrder(b)
   })
 
   const isToday = isSameDay(selectedDate, today)
