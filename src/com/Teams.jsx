@@ -171,8 +171,8 @@ const Teams = () => {
   const getStatusOrder = (game) => {
     const statusName = game.competitions?.[0]?.status?.type?.name
     if (statusName === "STATUS_IN_PROGRESS") return 0
-    if (statusName === "STATUS_FINAL") return 2
-    return 1 // UPCOMING
+    if (statusName === "STATUS_FINAL") return 1
+    return 2 // UPCOMING
   }
 
   const sortedGames = [...filteredGames].sort((a, b) => {
