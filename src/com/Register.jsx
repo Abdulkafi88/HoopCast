@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { auth } from "../Firebase"
 import { signInWithEmailAndPassword } from "firebase/auth"
+import { checkRateLimit, recordAttempt } from "../utils/rateLimit"
 
 
 const Register = ({ onSignIn }) => {
@@ -13,6 +14,14 @@ const Register = ({ onSignIn }) => {
   const handleLogin = async (e) => {
     e.preventDefault()
     setError("")
+
+    const { allowed, remaining } = checkRateLimit("login")
+    if (!allowed) {
+      setError(`Too many login attempts. Try again in ${remaining} minute${remaining !== 1 ? "s" : ""}.`)
+      return
+    }
+
+    recordAttempt("login")
 
     try {
       await signInWithEmailAndPassword(auth, email, password)

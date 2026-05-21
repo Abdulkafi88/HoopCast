@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { auth } from '../Firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { checkRateLimit, recordAttempt } from "../utils/rateLimit"
 
 const NewRegister = ({ onSignIn }) => {
   const [email, setEmail] = useState("")
@@ -17,6 +18,14 @@ const NewRegister = ({ onSignIn }) => {
       setError("Password must be at least 6 characters.")
       return
     }
+
+    const { allowed, remaining } = checkRateLimit("signup")
+    if (!allowed) {
+      setError(`Too many sign-up attempts. Try again in ${remaining} minute${remaining !== 1 ? "s" : ""}.`)
+      return
+    }
+
+    recordAttempt("signup")
 
     try {
       await createUserWithEmailAndPassword(auth, email, password)
