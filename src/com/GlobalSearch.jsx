@@ -26,6 +26,7 @@ const GlobalSearch = () => {
   const [loading, setLoading] = useState(false)
   const debounceRef = useRef(null)
   const wrapperRef = useRef(null)
+  const playerCacheRef = useRef(null)
   const navigate = useNavigate()
 
   // Close on outside click
@@ -58,22 +59,24 @@ const GlobalSearch = () => {
     setResults(teamMatches)
     setOpen(true)
 
-    // Player search (debounced)
+    // Player search (debounced + cached — 30 requests only fire once, then reused)
     clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(async () => {
       if (val.length < 3) return
       setLoading(true)
       try {
-        const teamIds = Array.from({ length: 30 }, (_, i) => i + 1)
-        const responses = await Promise.all(
-          teamIds.map((id) =>
-            fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/${id}/roster`)
-              .then((r) => r.json())
-              .catch(() => ({ athletes: [] }))
+        if (!playerCacheRef.current) {
+          const teamIds = Array.from({ length: 30 }, (_, i) => i + 1)
+          const responses = await Promise.all(
+            teamIds.map((id) =>
+              fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/${id}/roster`)
+                .then((r) => r.json())
+                .catch(() => ({ athletes: [] }))
+            )
           )
-        )
-        const allPlayers = responses.flatMap((data) => data.athletes ?? [])
-        const players = allPlayers
+          playerCacheRef.current = responses.flatMap((data) => data.athletes ?? [])
+        }
+        const players = playerCacheRef.current
           .filter((p) => p.fullName.toLowerCase().includes(val.toLowerCase()))
           .slice(0, 5)
           .map((p) => ({ type: "player", id: p.id, name: p.fullName, player: p }))

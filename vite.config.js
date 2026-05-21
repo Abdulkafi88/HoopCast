@@ -4,6 +4,16 @@ import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   base: "/HoopCast/",
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          firebase: ["firebase/app", "firebase/auth", "firebase/firestore"],
+          vendor: ["react", "react-dom", "react-router-dom"],
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     VitePWA({

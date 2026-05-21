@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -13,10 +12,17 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// Defer analytics — not needed for core functionality, load after app is interactive
+if (typeof window !== "undefined") {
+  setTimeout(() => {
+    import("firebase/analytics").then(({ getAnalytics }) => {
+      getAnalytics(app)
+    })
+  }, 4000)
+}
 
 export { app, auth, db };
