@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import Skeleton from "./Skeleton"
+import usePageTitle from "../hooks/usePageTitle"
 
 const WESTERN_TEAMS = new Set([
   "OKC", "HOU", "LAL", "DEN", "LAC", "MIN", "GS", "MEM",
@@ -11,6 +12,7 @@ const Standings = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [conference, setConference] = useState("all")
+  usePageTitle("Standings")
 
   useEffect(() => {
     const fetchStandings = async () => {

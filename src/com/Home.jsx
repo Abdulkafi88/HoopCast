@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
+import usePageTitle from "../hooks/usePageTitle"
 
 const Home = () => {
   const [news, setNews] = useState([])
+  const [newsError, setNewsError] = useState(false)
+  usePageTitle("Home")
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -10,8 +13,8 @@ const Home = () => {
         const res = await fetch("https://site.api.espn.com/apis/site/v2/sports/basketball/nba/news?limit=6")
         const data = await res.json()
         setNews(data.articles ?? [])
-      } catch (err) {
-        // silently fail
+      } catch {
+        setNewsError(true)
       }
     }
     fetchNews()
@@ -56,7 +59,15 @@ const Home = () => {
         </div>
       </section>
 
-      {news.length > 0 && (
+      {newsError && (
+        <section className="news-section content-holders">
+          <p style={{ color: "#e53e3e", textAlign: "center" }}>
+            Could not load NBA news. Please check your connection and refresh.
+          </p>
+        </section>
+      )}
+
+      {!newsError && news.length > 0 && (
         <section className="news-section content-holders">
           <h2 className="news-title">Latest NBA News</h2>
           <div className="news-grid">

@@ -4,12 +4,14 @@ import { collection, getDocs, query, where, deleteDoc, doc } from "firebase/fire
 import { auth, db } from "../Firebase"
 import GameCard from "./GameCard"
 import Skeleton from "./Skeleton"
+import usePageTitle from "../hooks/usePageTitle"
 
 const Savegames = () => {
   const [savedGames, setSavedGames] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [confirmRemoveId, setConfirmRemoveId] = useState(null)
+  usePageTitle("Saved Games")
 
   useEffect(() => {
     fetchSavedGames()

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import usePageTitle from "../hooks/usePageTitle"
 
 const NBA_TEAMS = [
   { id: "1", name: "Atlanta Hawks" }, { id: "2", name: "Boston Celtics" },
@@ -24,33 +25,50 @@ const PlayerPicker = ({ label, onSelect, selected }) => {
   const [teamId, setTeamId] = useState("")
   const [roster, setRoster] = useState([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     if (!teamId) return
     setLoading(true)
+    setError(null)
     fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/${teamId}/roster`)
       .then((r) => r.json())
       .then((d) => setRoster(d.athletes ?? []))
-      .catch(() => {})
+      .catch(() => setError("Could not load roster. Please try again."))
       .finally(() => setLoading(false))
   }, [teamId])
 
   return (
     <div className="compare-picker">
       <h3 className="compare-picker-label">{label}</h3>
-      <select className="team-select" value={teamId} onChange={(e) => { setTeamId(e.target.value); onSelect(null) }}>
+      <label htmlFor={`team-select-${label}`} className="sr-only">Select team for {label}</label>
+      <select
+        id={`team-select-${label}`}
+        className="team-select"
+        value={teamId}
+        onChange={(e) => { setTeamId(e.target.value); onSelect(null) }}
+      >
         <option value="">Select team...</option>
         {NBA_TEAMS.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
       </select>
-      {loading && <p style={{ color: "#aaa", fontSize: "0.85rem" }}>Loading...</p>}
-      {roster.length > 0 && (
-        <select className="team-select" style={{ marginTop: "0.5rem" }} onChange={(e) => {
-          const p = roster.find((r) => r.id === e.target.value)
-          onSelect(p ?? null)
-        }}>
-          <option value="">Select player...</option>
-          {roster.map((p) => <option key={p.id} value={p.id}>{p.fullName}</option>)}
-        </select>
+      {loading && <p style={{ color: "#aaa", fontSize: "0.85rem" }}>Loading roster...</p>}
+      {error && <p style={{ color: "#e53e3e", fontSize: "0.85rem" }}>{error}</p>}
+      {!error && roster.length > 0 && (
+        <>
+          <label htmlFor={`player-select-${label}`} className="sr-only">Select player for {label}</label>
+          <select
+            id={`player-select-${label}`}
+            className="team-select"
+            style={{ marginTop: "0.5rem" }}
+            onChange={(e) => {
+              const p = roster.find((r) => r.id === e.target.value)
+              onSelect(p ?? null)
+            }}
+          >
+            <option value="">Select player...</option>
+            {roster.map((p) => <option key={p.id} value={p.id}>{p.fullName}</option>)}
+          </select>
+        </>
       )}
       {selected && (
         <div className="compare-selected-player">
@@ -73,21 +91,23 @@ const PlayerComparison = () => {
   const [statsA, setStatsA] = useState(null)
   const [statsB, setStatsB] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [statsError, setStatsError] = useState(null)
+  usePageTitle("Compare Players")
 
   const fetchStats = async (player, setStat) => {
     if (!player) { setStat(null); return }
-    try {
-      const res = await fetch(
-        `https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/${player.id}/overview`
-      )
-      const data = await res.json()
-      setStat(data.statistics ?? null)
-    } catch (err) { setStat(null) }
+    const res = await fetch(
+      `https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/athletes/${player.id}/overview`
+    )
+    const data = await res.json()
+    setStat(data.statistics ?? null)
   }
 
   useEffect(() => {
     setLoading(true)
+    setStatsError(null)
     Promise.all([fetchStats(playerA, setStatsA), fetchStats(playerB, setStatsB)])
+      .catch(() => setStatsError("Could not load player stats. Please try again."))
       .finally(() => setLoading(false))
   }, [playerA, playerB])
 
@@ -113,8 +133,9 @@ const PlayerComparison = () => {
       </div>
 
       {loading && <p style={{ textAlign: "center", color: "#777", marginTop: "2rem" }}>Loading stats...</p>}
+      {statsError && <p style={{ textAlign: "center", color: "#e53e3e", marginTop: "2rem" }}>{statsError}</p>}
 
-      {canCompare && !loading && (
+      {canCompare && !loading && !statsError && (
         <div className="compare-table-wrapper">
           <table className="compare-table">
             <thead>

@@ -3,14 +3,17 @@ import { auth, db } from "../Firebase"
 import { collection, getDocs, query, where } from "firebase/firestore"
 import { signOut } from "firebase/auth"
 import { useNavigate } from "react-router-dom"
+import usePageTitle from "../hooks/usePageTitle"
 
 const Profile = () => {
   const [savedCount, setSavedCount] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [fetchError, setFetchError] = useState(false)
   const navigate = useNavigate()
   const user = auth.currentUser
   const favoriteTeam = localStorage.getItem("favoriteTeam") || null
   const favoriteLogo = localStorage.getItem("favoriteTeamLogo") || null
+  usePageTitle("Profile")
 
   useEffect(() => {
     const fetchCount = async () => {
@@ -19,8 +22,8 @@ const Profile = () => {
         const q = query(collection(db, "games"), where("userId", "==", user.uid))
         const snap = await getDocs(q)
         setSavedCount(snap.size)
-      } catch (err) {
-        // ignore
+      } catch {
+        setFetchError(true)
       } finally {
         setLoading(false)
       }
@@ -64,9 +67,17 @@ const Profile = () => {
         </div>
       </div>
 
+      {fetchError && (
+        <p style={{ color: "#e53e3e", textAlign: "center", margin: "1rem 0" }}>
+          Could not load saved game count. Please refresh.
+        </p>
+      )}
+
       <div className="profile-stats">
         <div className="profile-stat-box">
-          <span className="profile-stat-val">{loading ? "..." : savedCount}</span>
+          <span className="profile-stat-val">
+            {loading ? "..." : fetchError ? "-" : savedCount}
+          </span>
           <span className="profile-stat-lbl">Saved Games</span>
         </div>
         <div className="profile-stat-box">

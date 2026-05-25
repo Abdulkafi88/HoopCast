@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useParams, useLocation, Link } from "react-router-dom"
+import usePageTitle from "../hooks/usePageTitle"
 
 const StatCard = ({ label, value }) => (
   <div className="pd-stat-card">
@@ -17,6 +18,7 @@ const PlayerDetail = () => {
   const [gameLog, setGameLog] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  usePageTitle(playerFromState?.fullName ?? "Player")
 
   useEffect(() => {
     const fetchStats = async () => {

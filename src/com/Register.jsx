@@ -3,13 +3,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import { auth } from "../Firebase"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { checkRateLimit, recordAttempt } from "../utils/rateLimit"
+import usePageTitle from "../hooks/usePageTitle"
 
-
-const Register = ({ onSignIn }) => {
+const Register = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const navigate = useNavigate()
+  usePageTitle("Login")
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -38,44 +39,51 @@ const Register = ({ onSignIn }) => {
       }
     }
   }
+
   return (
-    <React.Fragment>
-      <div className="login-container">
-        <form className="login-form" onSubmit={handleLogin}>
-          <h1>Welcome Back</h1>
-          <p>Please login to your account</p>
-          <div className="input-group">
-            <input
-              type="text"
-              name="username"
-              id="username"
-              placeholder="email"
-              required
-              style={{ backgroundColor: "white", color: "black" }}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="input-group">
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="Password"
-              required
-              style={{ backgroundColor: "white", color: "black" }}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          {error && <p style={{ color: "red", marginBottom: "1rem", fontSize: "0.9rem" }}>{error}</p>}
-          <button type="submit">Login</button>
-          <div className="bottom-text">
-            <p>
-              Don't have an account? <Link to={"/newregister"}>Sign Up</Link>
-            </p>
-          </div>
-        </form>
-      </div>
-    </React.Fragment>
+    <div className="login-container">
+      <form className="login-form" onSubmit={handleLogin} noValidate>
+        <h1>Welcome Back</h1>
+        <p>Please login to your account</p>
+        <div className="input-group">
+          <label htmlFor="login-email">Email address</label>
+          <input
+            type="email"
+            name="email"
+            id="login-email"
+            placeholder="you@example.com"
+            required
+            autoComplete="email"
+            style={{ backgroundColor: "white", color: "black" }}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="input-group">
+          <label htmlFor="login-password">Password</label>
+          <input
+            type="password"
+            name="password"
+            id="login-password"
+            placeholder="Your password"
+            required
+            autoComplete="current-password"
+            style={{ backgroundColor: "white", color: "black" }}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        {error && (
+          <p role="alert" style={{ color: "red", marginBottom: "1rem", fontSize: "0.9rem" }}>
+            {error}
+          </p>
+        )}
+        <button type="submit">Login</button>
+        <div className="bottom-text">
+          <p>
+            Don't have an account? <Link to={"/newregister"}>Sign Up</Link>
+          </p>
+        </div>
+      </form>
+    </div>
   )
 }
 

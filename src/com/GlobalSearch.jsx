@@ -26,10 +26,10 @@ const GlobalSearch = () => {
   const [loading, setLoading] = useState(false)
   const debounceRef = useRef(null)
   const wrapperRef = useRef(null)
+  const inputRef = useRef(null)
   const playerCacheRef = useRef(null)
   const navigate = useNavigate()
 
-  // Close on outside click
   useEffect(() => {
     const handler = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -50,7 +50,6 @@ const GlobalSearch = () => {
       return
     }
 
-    // Team matches (instant)
     const teamMatches = NBA_TEAMS
       .filter((t) => t.name.toLowerCase().includes(val.toLowerCase()))
       .slice(0, 3)
@@ -59,7 +58,6 @@ const GlobalSearch = () => {
     setResults(teamMatches)
     setOpen(true)
 
-    // Player search (debounced + cached — 30 requests only fire once, then reused)
     clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(async () => {
       if (val.length < 3) return
@@ -88,7 +86,13 @@ const GlobalSearch = () => {
     }, 400)
   }
 
-  // Cleanup debounce on unmount
+  const handleKeyDown = (e) => {
+    if (e.key === "Escape") {
+      setOpen(false)
+      setQuery("")
+    }
+  }
+
   useEffect(() => {
     return () => clearTimeout(debounceRef.current)
   }, [])
@@ -103,25 +107,44 @@ const GlobalSearch = () => {
     }
   }
 
+  const listboxId = "global-search-listbox"
+
   return (
     <div className="global-search" ref={wrapperRef}>
+      <label htmlFor="global-search-input" className="sr-only">Search teams or players</label>
       <input
+        id="global-search-input"
+        ref={inputRef}
         className="global-search-input"
-        type="text"
+        type="search"
+        role="combobox"
+        aria-label="Search teams or players"
+        aria-expanded={open && results.length > 0}
+        aria-autocomplete="list"
+        aria-controls={listboxId}
+        aria-haspopup="listbox"
+        autoComplete="off"
         placeholder="Search teams or players..."
         value={query}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         onFocus={() => query && setOpen(true)}
       />
       {open && results.length > 0 && (
-        <div className="global-search-dropdown">
+        <div id={listboxId} className="global-search-dropdown" role="listbox">
           {results.map((item, i) => (
-            <button key={i} className="search-result-item" onClick={() => handleSelect(item)}>
+            <button
+              key={i}
+              className="search-result-item"
+              role="option"
+              aria-selected="false"
+              onClick={() => handleSelect(item)}
+            >
               <span className="search-result-type">{item.type === "team" ? "🏀 Team" : "👤 Player"}</span>
               <span className="search-result-name">{item.name}</span>
             </button>
           ))}
-          {loading && <p className="search-loading">Searching players...</p>}
+          {loading && <p className="search-loading" role="status">Searching players...</p>}
         </div>
       )}
     </div>

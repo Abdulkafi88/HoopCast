@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import Skeleton from "./Skeleton"
+import usePageTitle from "../hooks/usePageTitle"
 
 const TeamDetail = () => {
   const { teamId } = useParams()
@@ -9,6 +10,7 @@ const TeamDetail = () => {
   const [schedule, setSchedule] = useState([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState("schedule")
+  usePageTitle("Team Details")
 
   useEffect(() => {
     const fetchAll = async () => {

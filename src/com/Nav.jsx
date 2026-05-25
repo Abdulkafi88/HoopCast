@@ -18,7 +18,7 @@ export default function Nav({ user }) {
   const closeMenu = () => setMenuOpen(false)
 
   return (
-    <nav>
+    <nav role="navigation" aria-label="Main navigation">
       {/* Left: logo + search */}
       <div className="nav__left">
         <div className="nav__logo">
@@ -41,7 +41,7 @@ export default function Nav({ user }) {
           <>
             <li className="link"><Link to="/profile">Profile</Link></li>
             <li className="link">
-              <button style={{ backgroundColor: "red" }} onClick={handleSignOut}>Logout</button>
+              <button className="nav__logout-btn" onClick={handleSignOut}>Logout</button>
             </li>
           </>
         ) : (
@@ -50,7 +50,12 @@ export default function Nav({ user }) {
           </li>
         )}
         <li className="link">
-          <button className="dark-toggle" onClick={toggleDarkMode} title="Toggle dark mode">
+          <button
+            className="dark-toggle"
+            onClick={toggleDarkMode}
+            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          >
             {darkMode ? "☀️" : "🌙"}
           </button>
         </li>
@@ -61,6 +66,8 @@ export default function Nav({ user }) {
         className="nav__hamburger"
         onClick={() => setMenuOpen((prev) => !prev)}
         aria-label="Toggle menu"
+        aria-expanded={menuOpen}
+        aria-controls="mobile-menu"
       >
         <span className="hamburger__line"></span>
         <span className="hamburger__line"></span>
@@ -69,24 +76,32 @@ export default function Nav({ user }) {
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <ul className="nav__links--mobile">
+        <ul id="mobile-menu" className="nav__links--mobile" role="menu">
           <li className="mobile-search-item"><GlobalSearch /></li>
-          <li><Link to="/home" onClick={closeMenu}>Home</Link></li>
-          <li><Link to="/teams" onClick={closeMenu}>Games</Link></li>
-          <li><Link to="/standings" onClick={closeMenu}>Standings</Link></li>
-          <li><Link to="/players" onClick={closeMenu}>Players</Link></li>
-          <li><Link to="/compare" onClick={closeMenu}>Compare</Link></li>
-          <li><Link to="/savegames" onClick={closeMenu}>Saved Games</Link></li>
+          <li role="none"><Link to="/home" onClick={closeMenu}>Home</Link></li>
+          <li role="none"><Link to="/teams" onClick={closeMenu}>Games</Link></li>
+          <li role="none"><Link to="/standings" onClick={closeMenu}>Standings</Link></li>
+          <li role="none"><Link to="/players" onClick={closeMenu}>Players</Link></li>
+          <li role="none"><Link to="/compare" onClick={closeMenu}>Compare</Link></li>
+          <li role="none"><Link to="/savegames" onClick={closeMenu}>Saved Games</Link></li>
           {auth.currentUser ? (
             <>
-              <li><Link to="/profile" onClick={closeMenu}>Profile</Link></li>
-              <li><button style={{ backgroundColor: "red", width: "100%" }} onClick={handleSignOut}>Logout</button></li>
+              <li role="none"><Link to="/profile" onClick={closeMenu}>Profile</Link></li>
+              <li role="none">
+                <button className="nav__logout-btn" style={{ width: "100%" }} onClick={handleSignOut}>
+                  Logout
+                </button>
+              </li>
             </>
           ) : (
-            <li><Link to="/register" className="nav__btn" onClick={closeMenu}>Login</Link></li>
+            <li role="none"><Link to="/register" className="nav__btn" onClick={closeMenu}>Login</Link></li>
           )}
-          <li>
-            <button className="dark-toggle" onClick={toggleDarkMode}>
+          <li role="none">
+            <button
+              className="dark-toggle"
+              onClick={toggleDarkMode}
+              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            >
               {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
             </button>
           </li>

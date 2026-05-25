@@ -2,6 +2,8 @@ import React, { useState, useEffect, lazy, Suspense } from "react"
 import { Routes, Route, Navigate } from "react-router-dom"
 import Nav from "./com/Nav"
 import ProtectedRoute from "./com/ProtectedRoute"
+import ErrorBoundary from "./com/ErrorBoundary"
+import PageLoader from "./com/PageLoader"
 import { DarkModeProvider } from "./context/DarkModeContext"
 import useNotifications from "./hooks/useNotifications"
 import { auth } from "./Firebase"
@@ -37,7 +39,7 @@ function AppInner() {
 
   if (showOnboarding) {
     return (
-      <Suspense fallback={null}>
+      <Suspense fallback={<PageLoader />}>
         <Onboarding onComplete={() => setShowOnboarding(false)} />
       </Suspense>
     )
@@ -46,24 +48,26 @@ function AppInner() {
   return (
     <>
       <Nav user={user} />
-      <Suspense fallback={null}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/teams" element={<Teams />} />
-          <Route path="/standings" element={<Standings />} />
-          <Route path="/players" element={<PlayerSearch />} />
-          <Route path="/player/:playerId" element={<PlayerDetail />} />
-          <Route path="/compare" element={<PlayerComparison />} />
-          <Route path="/team/:teamId" element={<TeamDetail />} />
-          <Route path="/game/:gameId" element={<GameDetail />} />
-          <Route path="/savegames" element={<ProtectedRoute><Savegames /></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/newregister" element={<NewRegister />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/teams" element={<Teams />} />
+            <Route path="/standings" element={<Standings />} />
+            <Route path="/players" element={<PlayerSearch />} />
+            <Route path="/player/:playerId" element={<PlayerDetail />} />
+            <Route path="/compare" element={<PlayerComparison />} />
+            <Route path="/team/:teamId" element={<TeamDetail />} />
+            <Route path="/game/:gameId" element={<GameDetail />} />
+            <Route path="/savegames" element={<ProtectedRoute><Savegames /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/newregister" element={<NewRegister />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </>
   )
 }
@@ -80,7 +84,9 @@ function App() {
 
   return (
     <DarkModeProvider>
-      <AppInner />
+      <ErrorBoundary>
+        <AppInner />
+      </ErrorBoundary>
     </DarkModeProvider>
   )
 }

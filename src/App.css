@@ -3045,3 +3045,52 @@ button:hover {
   border-color: #818cf8;
   color: #fff;
 }
+
+/* Page loader spinner */
+.page-loader-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(92, 72, 238, 0.2);
+  border-top-color: #5c48ee;
+  border-radius: 50%;
+  animation: spin-loader 0.8s linear infinite;
+}
+
+@keyframes spin-loader {
+  to { transform: rotate(360deg); }
+}
+
+[data-theme="dark"] .page-loader-spinner {
+  border-color: rgba(129, 140, 248, 0.2);
+  border-top-color: #818cf8;
+}
+
+/* Nav logout button */
+.nav__logout-btn {
+  background: #e53e3e;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.nav__logout-btn:hover {
+  background: #c53030;
+}
+
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}

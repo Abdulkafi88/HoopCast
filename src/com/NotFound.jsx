@@ -1,7 +1,9 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import usePageTitle from "../hooks/usePageTitle"
 
 const NotFound = () => {
+  usePageTitle("404 Not Found")
   return (
     <div style={{ textAlign: "center", marginTop: "5rem" }}>
       <h1 style={{ fontSize: "5rem", color: "var(--primary-color)" }}>404</h1>

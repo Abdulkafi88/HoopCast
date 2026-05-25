@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import Skeleton from "./Skeleton"
+import usePageTitle from "../hooks/usePageTitle"
 
 const InjuryReport = ({ injuries }) => {
   if (!injuries?.length) return null
@@ -274,6 +275,7 @@ const GameDetail = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [copied, setCopied] = useState(false)
+  usePageTitle("Game Details")
 
   useEffect(() => {
     const fetchGameDetail = async () => {

@@ -3,6 +3,7 @@ import { collection, addDoc, getDocs, query, where } from "firebase/firestore"
 import { auth, db } from "../Firebase"
 import GameCard from "./GameCard"
 import Skeleton from "./Skeleton"
+import usePageTitle from "../hooks/usePageTitle"
 
 const buildDateRange = () => {
   const dates = []
@@ -45,6 +46,7 @@ const DATE_RANGE = buildDateRange()
 const Teams = () => {
   const today = TODAY
   const dateRange = DATE_RANGE
+  usePageTitle("Games")
 
   const [selectedDate, setSelectedDate] = useState(today)
   const [nba, setNba] = useState([])

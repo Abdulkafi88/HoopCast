@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
+import usePageTitle from "../hooks/usePageTitle"
 
 const NBA_TEAMS = [
   { id: "1",  name: "Atlanta Hawks" },
@@ -45,6 +46,7 @@ const PlayerSearch = () => {
   const [selectedTeam, setSelectedTeam] = useState("")
   const [roster, setRoster] = useState([])
   const [search, setSearch] = useState("")
+  usePageTitle("Players")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
