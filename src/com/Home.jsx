@@ -2,8 +2,27 @@ import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import usePageTitle from "../hooks/usePageTitle"
 
+const NewsSkeleton = () => (
+  <section className="news-section content-holders">
+    <div className="news-skeleton-title" />
+    <div className="news-grid">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="news-card news-card--skeleton">
+          <div className="news-skeleton-img" />
+          <div className="news-body">
+            <div className="news-skeleton-line news-skeleton-line--wide" />
+            <div className="news-skeleton-line" />
+            <div className="news-skeleton-line news-skeleton-line--short" />
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+)
+
 const Home = () => {
   const [news, setNews] = useState([])
+  const [newsLoading, setNewsLoading] = useState(true)
   const [newsError, setNewsError] = useState(false)
   usePageTitle("Home")
 
@@ -15,6 +34,8 @@ const Home = () => {
         setNews(data.articles ?? [])
       } catch {
         setNewsError(true)
+      } finally {
+        setNewsLoading(false)
       }
     }
     fetchNews()
@@ -59,7 +80,9 @@ const Home = () => {
         </div>
       </section>
 
-      {newsError && (
+      {newsLoading && <NewsSkeleton />}
+
+      {!newsLoading && newsError && (
         <section className="news-section content-holders">
           <p style={{ color: "#e53e3e", textAlign: "center" }}>
             Could not load NBA news. Please check your connection and refresh.
@@ -67,7 +90,7 @@ const Home = () => {
         </section>
       )}
 
-      {!newsError && news.length > 0 && (
+      {!newsLoading && !newsError && news.length > 0 && (
         <section className="news-section content-holders">
           <h2 className="news-title">Latest NBA News</h2>
           <div className="news-grid">
@@ -84,6 +107,7 @@ const Home = () => {
                     src={article.images[0].url}
                     alt={article.headline}
                     className="news-img"
+                    loading="lazy"
                   />
                 )}
                 <div className="news-body">

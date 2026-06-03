@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { auth } from '../Firebase'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth'
 import { checkRateLimit, recordAttempt } from "../utils/rateLimit"
 import usePageTitle from "../hooks/usePageTitle"
 
@@ -9,6 +9,7 @@ const NewRegister = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   usePageTitle("Sign Up")
 
@@ -28,10 +29,12 @@ const NewRegister = () => {
     }
 
     recordAttempt("signup")
+    setLoading(true)
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password)
-      navigate('/home')
+      const { user } = await createUserWithEmailAndPassword(auth, email, password)
+      await sendEmailVerification(user)
+      navigate('/verify-email')
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
         setError("An account with this email already exists.")
@@ -42,6 +45,8 @@ const NewRegister = () => {
       } else {
         setError("Sign up failed. Please try again.")
       }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -81,10 +86,12 @@ const NewRegister = () => {
             {error}
           </p>
         )}
-        <button type="submit">Sign Up</button>
+        <button type="submit" disabled={loading} aria-busy={loading}>
+          {loading ? "Creating account..." : "Sign Up"}
+        </button>
         <div className="bottom-text">
           <p>
-            Already have an account? <Link to={"/register"}>Login</Link>
+            Already have an account? <Link to="/register">Login</Link>
           </p>
         </div>
       </form>

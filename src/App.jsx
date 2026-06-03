@@ -1,5 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from "react"
-import { Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route, Navigate, useLocation } from "react-router-dom"
 import Nav from "./com/Nav"
 import ProtectedRoute from "./com/ProtectedRoute"
 import ErrorBoundary from "./com/ErrorBoundary"
@@ -12,6 +12,8 @@ const Home = lazy(() => import("./com/Home"))
 const Teams = lazy(() => import("./com/Teams"))
 const Register = lazy(() => import("./com/Register"))
 const NewRegister = lazy(() => import("./com/NewRegister"))
+const ForgotPassword = lazy(() => import("./com/ForgotPassword"))
+const VerifyEmail = lazy(() => import("./com/VerifyEmail"))
 const Savegames = lazy(() => import("./com/Savegames"))
 const NotFound = lazy(() => import("./com/NotFound"))
 const GameDetail = lazy(() => import("./com/GameDetail"))
@@ -22,6 +24,14 @@ const PlayerComparison = lazy(() => import("./com/PlayerComparison"))
 const TeamDetail = lazy(() => import("./com/TeamDetail"))
 const Profile = lazy(() => import("./com/Profile"))
 const Onboarding = lazy(() => import("./com/Onboarding"))
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+  return null
+}
 
 function AppInner() {
   const [user, setUser] = useState(null)
@@ -47,6 +57,7 @@ function AppInner() {
 
   return (
     <>
+      <ScrollToTop />
       <Nav user={user} />
       <ErrorBoundary>
         <Suspense fallback={<PageLoader />}>
@@ -64,6 +75,8 @@ function AppInner() {
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/register" element={<Register />} />
             <Route path="/newregister" element={<NewRegister />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

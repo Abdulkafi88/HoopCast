@@ -9,6 +9,7 @@ const Register = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   usePageTitle("Login")
 
@@ -23,6 +24,7 @@ const Register = () => {
     }
 
     recordAttempt("login")
+    setLoading(true)
 
     try {
       await signInWithEmailAndPassword(auth, email, password)
@@ -37,6 +39,8 @@ const Register = () => {
       } else {
         setError("Login failed. Please try again.")
       }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -76,10 +80,15 @@ const Register = () => {
             {error}
           </p>
         )}
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading} aria-busy={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
         <div className="bottom-text">
           <p>
-            Don't have an account? <Link to={"/newregister"}>Sign Up</Link>
+            <Link to="/forgot-password">Forgot your password?</Link>
+          </p>
+          <p>
+            Don't have an account? <Link to="/newregister">Sign Up</Link>
           </p>
         </div>
       </form>
