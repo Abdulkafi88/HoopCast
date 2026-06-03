@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abdulkafi88.github.io/HoopCast/sitemap.xml
