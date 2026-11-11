@@ -18,7 +18,7 @@ const Standings = () => {
     const fetchStandings = async () => {
       try {
         const res = await fetch(
-          "https://site.web.api.espn.com/apis/v2/sports/basketball/nba/standings?region=us&lang=en&contentorigin=espn&type=0&level=1&sort=gamesbehind%3Aasc&season=2026"
+          "https://site.web.api.espn.com/apis/v2/sports/basketball/nba/standings?region=us&lang=en&contentorigin=espn&type=0&level=1&sort=gamesbehind%3Aasc"
         )
         const data = await res.json()
         const entries = data?.standings?.entries ?? []

@@ -1,11 +1,54 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
+import { BookmarkIcon, StarIcon, ShareIcon } from "./Icons"
 
-const getStatusLabel = (game) => {
+export const getGameStatus = (game) => {
   const statusName = game.competitions?.[0]?.status?.type?.name
-  if (statusName === "STATUS_IN_PROGRESS") return { label: "LIVE", color: "#e53e3e" }
-  if (statusName === "STATUS_FINAL") return { label: "FINAL", color: "#718096" }
-  return { label: "UPCOMING", color: "#38a169" }
+  if (statusName === "STATUS_IN_PROGRESS" || statusName === "STATUS_HALFTIME" || statusName === "STATUS_END_PERIOD") return "live"
+  if (statusName === "STATUS_FINAL") return "final"
+  return "upcoming"
+}
+
+const STATUS_LABEL = { live: "LIVE", final: "FINAL", upcoming: "UPCOMING" }
+
+// ESPN lists competitors with a homeAway field; fall back to array order.
+export const getTeams = (game) => {
+  const comps = game.competitions?.[0]?.competitors ?? []
+  const home = comps.find((c) => c.homeAway === "home") ?? comps[0]
+  const away = comps.find((c) => c.homeAway === "away") ?? comps[1]
+  return { home, away }
+}
+
+export const getStatusDetail = (game) => {
+  const status = getGameStatus(game)
+  if (status === "upcoming") {
+    return new Date(game.date).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+  }
+  return game.competitions?.[0]?.status?.type?.shortDetail ?? STATUS_LABEL[status]
+}
+
+export const StatusPill = ({ status }) => (
+  <span className={`hc-pill hc-pill--${status}`}>
+    {status === "live" && <span className="hc-pill__dot" />}
+    {STATUS_LABEL[status]}
+  </span>
+)
+
+const TeamRow = ({ comp, side, status, otherScore }) => {
+  const score = status === "upcoming" ? "" : comp.score
+  const losing = status !== "upcoming" && Number(comp.score) < Number(otherScore)
+  return (
+    <div className="hc-card__team">
+      <img className="hc-card__logo" src={comp.team.logo} alt="" loading="lazy" />
+      <div className="hc-card__team-text">
+        <span className="hc-card__team-name">{comp.team.displayName}</span>
+        <span className="hc-card__team-meta">
+          {comp.records?.[0]?.summary ? `${comp.records[0].summary} · ` : ""}{side}
+        </span>
+      </div>
+      <span className={`hc-card__score${losing ? " is-losing" : ""}`}>{score}</span>
+    </div>
+  )
 }
 
 const GameCard = ({
@@ -20,121 +63,89 @@ const GameCard = ({
   favoriteTeam,
   onFavorite,
 }) => {
-  const home = gameDetails.competitions[0].competitors[0]
-  const away = gameDetails.competitions[0].competitors[1]
-  const status = getStatusLabel(gameDetails)
+  const [copied, setCopied] = useState(false)
+  const { home, away } = getTeams(gameDetails)
+  const status = getGameStatus(gameDetails)
   const isConfirming = confirmRemoveId === cardId
 
   const isHomeFav = favoriteTeam === home.team.displayName
   const isAwayFav = favoriteTeam === away.team.displayName
+  const isFav = isHomeFav || isAwayFav
 
-  const getMonthAndDate = (isoDate) => {
-    const dateObj = new Date(isoDate)
-    const month = dateObj.toLocaleString("en-US", { month: "short" })
-    const day = dateObj.toLocaleString("en-US", { weekday: "short" })
-    const date = dateObj.getDate()
-    return { month, day, date }
-  }
+  const dateLabel = new Date(gameDetails.date).toLocaleDateString("en-US", {
+    weekday: "short", month: "short", day: "numeric",
+  })
+  const venue = gameDetails.competitions?.[0]?.venue?.fullName
 
-  const { month, day, date } = getMonthAndDate(gameDetails.date)
-
-  const handleShare = (e) => {
-    e.preventDefault()
-    const url = `${window.location.origin}${window.location.pathname}#/game/${gameDetails.id}`
-    navigator.clipboard.writeText(url).then(() => {
-      alert("Game link copied to clipboard!")
+  const handleShare = () => {
+    const url = `${window.location.origin}/HoopCast/game/${gameDetails.id}`
+    navigator.clipboard?.writeText(url).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
     })
   }
 
   return (
-    <div className={`match ${isHomeFav || isAwayFav ? "fav-highlight" : ""}`}>
-
-      {/* Top bar: status + favorite + share */}
-      <div className="card-top-bar">
-        <div className="game-status-badge" style={{ backgroundColor: status.color }}>
-          {status.label}
-        </div>
-        <div className="card-actions">
+    <article className={`hc-card hc-card--${status}${isFav ? " is-fav" : ""}`}>
+      <div className="hc-card__top">
+        <StatusPill status={status} />
+        <span className="hc-card__detail">{getStatusDetail(gameDetails)}</span>
+        <div className="hc-card__actions">
           {onFavorite && (
             <button
-              className="icon-btn"
-              title={isHomeFav || isAwayFav ? "Remove favorite" : "Set as favorite team"}
+              type="button"
+              className={`hc-icon-btn${isFav ? " is-on" : ""}`}
+              aria-label={isFav ? "Remove favorite team" : "Set favorite team"}
+              aria-pressed={isFav}
               onClick={() => {
-                const isFav = isHomeFav || isAwayFav
                 const team = isHomeFav ? home : away
-                onFavorite(
-                  isFav ? favoriteTeam : team.team.displayName,
-                  isFav ? "" : team.team.logo
-                )
+                onFavorite(isFav ? favoriteTeam : team.team.displayName, isFav ? "" : team.team.logo)
               }}
             >
-              {isHomeFav || isAwayFav ? "⭐" : "☆"}
+              <StarIcon size={17} filled={isFav} />
             </button>
           )}
-          <button className="icon-btn" title="Share this game" onClick={handleShare}>
-            🔗
+          {onSave && (
+            <button
+              type="button"
+              className={`hc-icon-btn${isSaved ? " is-on" : ""}`}
+              aria-label={isSaved ? "Saved" : "Save game"}
+              aria-pressed={!!isSaved}
+              onClick={onSave}
+              disabled={isSaved}
+            >
+              <BookmarkIcon size={17} filled={isSaved} />
+            </button>
+          )}
+          <button type="button" className="hc-icon-btn" aria-label="Copy game link" onClick={handleShare}>
+            <ShareIcon size={17} />
           </button>
         </div>
       </div>
 
-      {/* Clickable area — goes to game detail */}
-      <Link to={`/game/${gameDetails.id}`} className="game-card-link">
-        <div className="flags">
-          <div className="home-flag">
-            <img className="flag" src={home.team.logo} alt={`${home.team.displayName} Logo`} />
-            <h3 className="home-team">{home.team.displayName}</h3>
-            <p className="score">{home.score}</p>
-          </div>
-          <span className="vs">vs</span>
-          <div className="away-flag">
-            <img className="flag" src={away.team.logo} alt={`${away.team.displayName} Logo`} />
-            <h3 className="away-team">{away.team.displayName}</h3>
-            <p className="score">{away.score}</p>
-          </div>
-        </div>
-
-        <div className="time-area">
-          <div className="time">
-            <h4 className="month">{month}</h4>
-            <h4 className="day">{day}</h4>
-            <h4 className="date">{date}</h4>
-          </div>
-          <h4 className="match-time">
-            {new Date(gameDetails.date).toLocaleTimeString("en-US", {
-              hour: "numeric",
-              minute: "2-digit",
-              hour12: true,
-            })}
-          </h4>
-        </div>
+      <Link to={`/game/${gameDetails.id}`} className="hc-card__teams">
+        <TeamRow comp={away} side="Away" status={status} otherScore={home.score} />
+        <TeamRow comp={home} side="Home" status={status} otherScore={away.score} />
       </Link>
 
-      {onSave && (
-        <button className="save-btn" onClick={onSave} disabled={isSaved}>
-          {isSaved ? "✓ Saved!" : "Save Game"}
-        </button>
-      )}
-
-      {!onSave && !onRemove && (
-        <Link to="/register" className="login-prompt-btn">
-          Login to save this game
-        </Link>
-      )}
-
-      {onRemove && (
-        isConfirming ? (
-          <div className="confirm-remove">
-            <p>Remove this game?</p>
-            <div className="confirm-btns">
-              <button className="confirm-yes" onClick={onConfirmRemove}>Yes, Remove</button>
-              <button className="confirm-no" onClick={onCancelRemove}>Cancel</button>
-            </div>
-          </div>
+      <div className="hc-card__foot">
+        <span className="hc-card__venue">{copied ? "Link copied" : venue ?? dateLabel}</span>
+        {onRemove ? (
+          isConfirming ? (
+            <span className="hc-card__confirm">
+              <button type="button" className="hc-link-btn hc-link-btn--danger" onClick={onConfirmRemove}>Remove</button>
+              <button type="button" className="hc-link-btn" onClick={onCancelRemove}>Cancel</button>
+            </span>
+          ) : (
+            <button type="button" className="hc-link-btn" onClick={onRemove}>Remove</button>
+          )
+        ) : !onSave ? (
+          <Link to="/register" className="hc-card__more">Sign in to save</Link>
         ) : (
-          <button className="remove-btn" onClick={onRemove}>Remove</button>
-        )
-      )}
-    </div>
+          <Link to={`/game/${gameDetails.id}`} className="hc-card__more">Game center →</Link>
+        )}
+      </div>
+    </article>
   )
 }
 

@@ -7,6 +7,7 @@ import PageLoader from "./com/PageLoader"
 import { DarkModeProvider } from "./context/DarkModeContext"
 import useNotifications from "./hooks/useNotifications"
 import { auth } from "./Firebase"
+import "./redesign.css"
 
 const Home = lazy(() => import("./com/Home"))
 const Teams = lazy(() => import("./com/Teams"))

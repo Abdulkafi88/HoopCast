@@ -330,7 +330,7 @@ const GameDetail = () => {
       <div className="detail-top-bar">
         <Link to="/teams" className="back-link">← Back to Games</Link>
         <button className="share-btn" onClick={handleShare}>
-          {copied ? "✓ Copied!" : "🔗 Share Game"}
+          {copied ? "Link copied" : "Share game"}
         </button>
       </div>
 

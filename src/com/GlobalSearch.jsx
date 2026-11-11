@@ -140,7 +140,7 @@ const GlobalSearch = () => {
               aria-selected="false"
               onClick={() => handleSelect(item)}
             >
-              <span className="search-result-type">{item.type === "team" ? "🏀 Team" : "👤 Player"}</span>
+              <span className="search-result-type">{item.type === "team" ? "Team" : "Player"}</span>
               <span className="search-result-name">{item.name}</span>
             </button>
           ))}

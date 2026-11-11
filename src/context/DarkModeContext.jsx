@@ -1,21 +1,16 @@
-import React, { createContext, useContext, useState, useEffect } from "react"
+import React, { createContext, useContext, useEffect } from "react"
 
-const DarkModeContext = createContext()
+// The redesign is dark-only, so the theme is fixed to dark.
+const DarkModeContext = createContext({ darkMode: true })
 
 export const DarkModeProvider = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("darkMode") === "true"
-  })
-
   useEffect(() => {
-    document.body.setAttribute("data-theme", darkMode ? "dark" : "light")
-    localStorage.setItem("darkMode", darkMode)
-  }, [darkMode])
-
-  const toggleDarkMode = () => setDarkMode((prev) => !prev)
+    document.body.setAttribute("data-theme", "dark")
+    localStorage.removeItem("darkMode")
+  }, [])
 
   return (
-    <DarkModeContext.Provider value={{ darkMode, toggleDarkMode }}>
+    <DarkModeContext.Provider value={{ darkMode: true }}>
       {children}
     </DarkModeContext.Provider>
   )

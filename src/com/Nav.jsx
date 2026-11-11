@@ -1,112 +1,105 @@
-import React, { useState } from "react"
-import { Link } from "react-router-dom"
+import React, { useState, useRef, useEffect } from "react"
+import { Link, NavLink, useNavigate } from "react-router-dom"
 import "../App.css"
 import { auth } from "../Firebase"
 import { signOut } from "firebase/auth"
-import { useDarkMode } from "../context/DarkModeContext"
 import GlobalSearch from "./GlobalSearch"
+import { BallIcon, UserIcon, HomeIcon, CalendarIcon, ChartIcon, BookmarkIcon, ChevronDownIcon, CompareIcon } from "./Icons"
+
+const MAIN_LINKS = [
+  { to: "/teams", label: "Games" },
+  { to: "/standings", label: "Standings" },
+  { to: "/players", label: "Players" },
+  { to: "/compare", label: "Compare" },
+]
+
+const TAB_LINKS = [
+  { to: "/home", label: "Home", Icon: HomeIcon },
+  { to: "/teams", label: "Games", Icon: CalendarIcon },
+  { to: "/standings", label: "Standings", Icon: ChartIcon },
+  { to: "/compare", label: "Compare", Icon: CompareIcon },
+  { to: "/savegames", label: "Saved", Icon: BookmarkIcon },
+]
 
 export default function Nav({ user }) {
   const [menuOpen, setMenuOpen] = useState(false)
-  const { darkMode, toggleDarkMode } = useDarkMode()
+  const menuRef = useRef(null)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const close = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false)
+    }
+    document.addEventListener("mousedown", close)
+    return () => document.removeEventListener("mousedown", close)
+  }, [])
 
   const handleSignOut = async () => {
     await signOut(auth)
     setMenuOpen(false)
+    navigate("/home")
   }
 
-  const closeMenu = () => setMenuOpen(false)
+  const linkClass = ({ isActive }) => `hc-nav__link${isActive ? " is-active" : ""}`
 
   return (
-    <nav role="navigation" aria-label="Main navigation">
-      {/* Left: logo + search */}
-      <div className="nav__left">
-        <div className="nav__logo">
-          <Link to="/home" onClick={closeMenu}>HoopCast</Link>
-        </div>
-        <div className="nav__search--desktop">
-          <GlobalSearch />
-        </div>
-      </div>
+    <>
+      <header className="hc-nav" role="banner">
+        <div className="hc-nav__inner">
+          <Link to="/home" className="hc-nav__logo" aria-label="HoopCast home">
+            <BallIcon size={26} className="hc-nav__ball" />
+            <span>HOOPCAST</span>
+          </Link>
 
-      {/* Right: links + login + dark mode (desktop) */}
-      <ul className="nav__links nav__links--desktop">
-        <li className="link"><Link to="/home">Home</Link></li>
-        <li className="link"><Link to="/teams">Games</Link></li>
-        <li className="link"><Link to="/standings">Standings</Link></li>
-        <li className="link"><Link to="/players">Players</Link></li>
-        <li className="link"><Link to="/compare">Compare</Link></li>
-        <li className="link"><Link to="/savegames">Saved</Link></li>
-        {auth.currentUser ? (
-          <>
-            <li className="link"><Link to="/profile">Profile</Link></li>
-            <li className="link">
-              <button className="nav__logout-btn" onClick={handleSignOut}>Logout</button>
-            </li>
-          </>
-        ) : (
-          <li className="link">
-            <Link to="/register" className="nav__btn">Login</Link>
-          </li>
-        )}
-        <li className="link">
-          <button
-            className="dark-toggle"
-            onClick={toggleDarkMode}
-            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            {darkMode ? "☀️" : "🌙"}
-          </button>
-        </li>
-      </ul>
+          <nav className="hc-nav__links" aria-label="Main navigation">
+            {MAIN_LINKS.map((l) => (
+              <NavLink key={l.to} to={l.to} className={linkClass}>{l.label}</NavLink>
+            ))}
+          </nav>
 
-      {/* Hamburger (mobile only) */}
-      <button
-        className="nav__hamburger"
-        onClick={() => setMenuOpen((prev) => !prev)}
-        aria-label="Toggle menu"
-        aria-expanded={menuOpen}
-        aria-controls="mobile-menu"
-      >
-        <span className="hamburger__line"></span>
-        <span className="hamburger__line"></span>
-        <span className="hamburger__line"></span>
-      </button>
+          <div className="hc-nav__right">
+            <div className="hc-nav__search">
+              <GlobalSearch />
+            </div>
 
-      {/* Mobile dropdown */}
-      {menuOpen && (
-        <ul id="mobile-menu" className="nav__links--mobile" role="menu">
-          <li className="mobile-search-item"><GlobalSearch /></li>
-          <li role="none"><Link to="/home" onClick={closeMenu}>Home</Link></li>
-          <li role="none"><Link to="/teams" onClick={closeMenu}>Games</Link></li>
-          <li role="none"><Link to="/standings" onClick={closeMenu}>Standings</Link></li>
-          <li role="none"><Link to="/players" onClick={closeMenu}>Players</Link></li>
-          <li role="none"><Link to="/compare" onClick={closeMenu}>Compare</Link></li>
-          <li role="none"><Link to="/savegames" onClick={closeMenu}>Saved Games</Link></li>
-          {auth.currentUser ? (
-            <>
-              <li role="none"><Link to="/profile" onClick={closeMenu}>Profile</Link></li>
-              <li role="none">
-                <button className="nav__logout-btn" style={{ width: "100%" }} onClick={handleSignOut}>
-                  Logout
+            {user ? (
+              <div className="hc-account" ref={menuRef}>
+                <button
+                  type="button"
+                  className="hc-account__btn"
+                  onClick={() => setMenuOpen((o) => !o)}
+                  aria-expanded={menuOpen}
+                  aria-haspopup="menu"
+                  aria-label="Account menu"
+                >
+                  <UserIcon size={18} />
+                  <ChevronDownIcon size={14} className="hc-account__chev" />
                 </button>
-              </li>
-            </>
-          ) : (
-            <li role="none"><Link to="/register" className="nav__btn" onClick={closeMenu}>Login</Link></li>
-          )}
-          <li role="none">
-            <button
-              className="dark-toggle"
-              onClick={toggleDarkMode}
-              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-            </button>
-          </li>
-        </ul>
-      )}
-    </nav>
+                {menuOpen && (
+                  <div className="hc-account__menu" role="menu">
+                    <p className="hc-account__email">{user.email}</p>
+                    <Link role="menuitem" to="/profile" onClick={() => setMenuOpen(false)}>Profile</Link>
+                    <Link role="menuitem" to="/savegames" onClick={() => setMenuOpen(false)}>Saved games</Link>
+                    <button role="menuitem" type="button" onClick={handleSignOut}>Log out</button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to="/register" className="hc-btn hc-btn--primary hc-nav__signin">Sign in</Link>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Bottom tab bar on phones */}
+      <nav className="hc-tabbar" aria-label="Main navigation">
+        {TAB_LINKS.map(({ to, label, Icon }) => (
+          <NavLink key={to} to={to} className={({ isActive }) => `hc-tabbar__item${isActive ? " is-active" : ""}`}>
+            <Icon size={22} />
+            <span>{label}</span>
+          </NavLink>
+        ))}
+      </nav>
+    </>
   )
 }

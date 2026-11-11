@@ -52,7 +52,7 @@ const Onboarding = ({ onComplete }) => {
   return (
     <div className="onboarding-overlay">
       <div className="onboarding-box">
-        <h1 className="onboarding-title">🏀 Welcome to HoopCast</h1>
+        <h1 className="onboarding-title">Welcome to HoopCast</h1>
         <p className="onboarding-sub">Pick your favorite team to get started</p>
 
         <div className="onboarding-grid">

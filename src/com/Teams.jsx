@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore"
 import { auth, db } from "../Firebase"
-import GameCard from "./GameCard"
+import GameCard, { getGameStatus } from "./GameCard"
 import Skeleton from "./Skeleton"
 import usePageTitle from "../hooks/usePageTitle"
 
@@ -59,6 +59,7 @@ const Teams = () => {
   const [searchLoading, setSearchLoading] = useState(false)
   const [favoriteTeam, setFavoriteTeam] = useState(() => localStorage.getItem("favoriteTeam") ?? "")
   const [lastRefresh, setLastRefresh] = useState(new Date())
+  const [statusFilter, setStatusFilter] = useState("all")
   const intervalRef = useRef(null)
   const dateStripRef = useRef(null)
   const searchDebounceRef = useRef(null)
@@ -190,6 +191,11 @@ const Teams = () => {
     return getStatusOrder(a) - getStatusOrder(b)
   })
 
+  const visibleGames = statusFilter === "all"
+    ? sortedGames
+    : sortedGames.filter((g) => getGameStatus(g) === statusFilter)
+  const liveCount = sortedGames.filter((g) => getGameStatus(g) === "live").length
+
   const isToday = isSameDay(selectedDate, today)
   const isPast = selectedDate < today && !isToday
   const isSearching = search.trim().length > 0
@@ -200,7 +206,34 @@ const Teams = () => {
   }
 
   return (
-    <div className="content-holders">
+    <div className="content-holders hc-games">
+      <div className="hc-page-head">
+        <div>
+          <h1 className="hc-h1">Games</h1>
+          {!isSearching && !loading && (
+            <p className="hc-muted">
+              {formatDateLabel(selectedDate)} · {sortedGames.length} {sortedGames.length === 1 ? "game" : "games"}
+              {liveCount > 0 ? `, ${liveCount} live now` : ""}
+            </p>
+          )}
+        </div>
+        {!isSearching && (
+          <div className="hc-segmented" role="group" aria-label="Filter games">
+            {[["all", "All"], ["live", "Live"], ["upcoming", "Upcoming"], ["final", "Final"]].map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                className={statusFilter === id ? "is-active" : ""}
+                aria-pressed={statusFilter === id}
+                onClick={() => setStatusFilter(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Date strip — hidden while searching */}
       {!isSearching && (
         <div className="date-strip" ref={dateStripRef}>
@@ -245,7 +278,7 @@ const Teams = () => {
           <span className="refresh-label upcoming-label">Upcoming games</span>
         )}
         {isSearching && (
-          <span className="refresh-label" style={{ color: "#5c48ee" }}>
+          <span className="refresh-label" style={{ color: "#FF6B1A" }}>
             Searching across past &amp; upcoming games...
           </span>
         )}
@@ -253,7 +286,7 @@ const Teams = () => {
 
       {favoriteTeam && !isSearching && (
         <p className="fav-label">
-          ⭐ Showing <strong>{favoriteTeam}</strong> games first
+          Showing <strong>{favoriteTeam}</strong> games first
           <button className="clear-fav" onClick={() => handleFavorite(favoriteTeam, "")}>
             Clear
           </button>
@@ -301,6 +334,8 @@ const Teams = () => {
             Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} />)
           ) : error ? (
             <p style={{ color: "red", gridColumn: "1/-1" }}>{error}</p>
+          ) : sortedGames.length > 0 && visibleGames.length === 0 ? (
+            <p className="hc-empty" style={{ gridColumn: "1/-1" }}>No {statusFilter} games on this day.</p>
           ) : sortedGames.length === 0 ? (
             <p style={{ gridColumn: "1/-1", textAlign: "center", color: "#777" }}>
               {isPast
@@ -310,7 +345,7 @@ const Teams = () => {
                 : "No games scheduled for this day yet."}
             </p>
           ) : (
-            sortedGames.map((game, index) => (
+            visibleGames.map((game, index) => (
               <GameCard
                 key={index}
                 gameDetails={game}
