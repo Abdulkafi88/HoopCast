@@ -15,15 +15,13 @@ const TeamDetail = () => {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [teamRes, rosterRes, scheduleRes] = await Promise.all([
-          fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/${teamId}`),
+        // The /teams/{id} endpoint has no CORS header, so take team info from roster/schedule instead
+        const [rosterRes, scheduleRes] = await Promise.all([
           fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/${teamId}/roster`),
           fetch(`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/${teamId}/schedule`),
         ])
-        const [teamData, rosterData, scheduleData] = await Promise.all([
-          teamRes.json(), rosterRes.json(), scheduleRes.json()
-        ])
-        setTeam(teamData.team)
+        const [rosterData, scheduleData] = await Promise.all([rosterRes.json(), scheduleRes.json()])
+        setTeam(rosterData.team ?? scheduleData.team ?? null)
         setRoster(rosterData.athletes ?? [])
 
         // Get next 10 upcoming + last 5 games
@@ -60,7 +58,7 @@ const TeamDetail = () => {
   )
 
   const logo = team.logos?.[0]?.href ?? team.logo
-  const record = team.record?.items?.[0]?.summary ?? "-"
+  const record = team.recordSummary ?? team.record?.items?.[0]?.summary ?? "-"
   const teamColor = `#${team.color ?? "5c48ee"}`
 
   return (
