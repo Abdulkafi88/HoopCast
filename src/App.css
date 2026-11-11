@@ -1490,7 +1490,6 @@ button:hover {
 /* Section cards */
 [data-theme="dark"] .injury-section,
 [data-theme="dark"] .h2h-section,
-[data-theme="dark"] .pbp-section,
 [data-theme="dark"] .top-performers,
 [data-theme="dark"] .quarter-scores {
   background: #151922;
@@ -1500,8 +1499,6 @@ button:hover {
 
 [data-theme="dark"] .injury-row { background: #0B0D12; border-left-color: #FF6B1A; }
 [data-theme="dark"] .h2h-game { background: #0B0D12; }
-[data-theme="dark"] .pbp-row { background: #0B0D12; }
-[data-theme="dark"] .pbp-row:hover { background: rgba(255,107,26,0.08); }
 [data-theme="dark"] .top-performer-card { background: #0B0D12; border-color: rgba(255,255,255,0.06); }
 [data-theme="dark"] .top-performer-card:first-child { background: linear-gradient(135deg, rgba(255,107,26,0.12), rgba(30,27,75,0.5)); border-color: #FF6B1A; }
 
@@ -1514,8 +1511,6 @@ button:hover {
 /* Buttons */
 [data-theme="dark"] .save-btn { background: #FF6B1A; }
 [data-theme="dark"] .remove-btn { background: #ef4444; }
-[data-theme="dark"] .show-more-btn { border-color: #FF6B1A; color: #FF6B1A; }
-[data-theme="dark"] .show-more-btn:hover { background: rgba(255,107,26,0.1); }
 [data-theme="dark"] .conf-tab.active { background: #FF6B1A; }
 [data-theme="dark"] .team-tab.active { background: #FF6B1A; }
 
@@ -2739,7 +2734,6 @@ button:hover {
 /* ===== SHARED SECTION CARD ===== */
 .injury-section,
 .h2h-section,
-.pbp-section,
 .top-performers,
 .quarter-scores {
   margin: 2rem 0;
@@ -2754,7 +2748,6 @@ button:hover {
 .top-performers  { animation-delay: 0.10s; }
 .injury-section  { animation-delay: 0.15s; }
 .h2h-section     { animation-delay: 0.20s; }
-.pbp-section     { animation-delay: 0.25s; }
 
 /* ===== INJURY REPORT ===== */
 .injury-list { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1rem; }
@@ -2840,60 +2833,6 @@ button:hover {
   padding: 0.15rem 0.5rem;
   border-radius: 20px;
 }
-
-/* ===== PLAY BY PLAY ===== */
-.pbp-list { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 1rem; }
-
-.pbp-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.6rem 0.9rem;
-  background: var(--secondary-color);
-  border-radius: 8px;
-  font-size: 0.87rem;
-  transition: 0.2s;
-}
-
-.pbp-row:hover { background: #eef2ff; }
-
-[data-theme="dark"] .pbp-row { background: #0B0D12; }
-[data-theme="dark"] .pbp-row:hover { background: rgba(255,107,26,0.08); }
-
-.pbp-period {
-  font-size: 0.7rem;
-  color: white;
-  background: var(--primary-color);
-  padding: 0.15rem 0.4rem;
-  border-radius: 4px;
-  min-width: 32px;
-  text-align: center;
-  font-weight: 700;
-}
-.pbp-clock { font-size: 0.75rem; color: #888; min-width: 42px; font-weight: 600; }
-.pbp-text { flex: 1; color: var(--text-color); }
-.pbp-score {
-  font-weight: 800;
-  color: var(--primary-color);
-  white-space: nowrap;
-  font-size: 0.9rem;
-}
-
-.show-more-btn {
-  margin-top: 0.75rem;
-  padding: 0.5rem 1.5rem;
-  background: none;
-  border: 2px solid var(--primary-color);
-  color: var(--primary-color);
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.85rem;
-  box-shadow: none;
-  transition: 0.2s;
-}
-
-.show-more-btn:hover { background: var(--primary-color); color: white; }
 
 /* ===== GAME LOG TABLE ===== */
 .gamelog-table-wrapper { overflow-x: auto; }

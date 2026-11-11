@@ -706,7 +706,6 @@ a.hc-mini-standings__row:hover .hc-mini-standings__team { color: var(--hc-orange
 [data-theme="dark"] .team-section,
 [data-theme="dark"] .injury-section,
 [data-theme="dark"] .h2h-section,
-[data-theme="dark"] .pbp-section,
 [data-theme="dark"] .quarter-scores {
   background: var(--hc-surface);
   border: 1px solid var(--hc-border);

@@ -71,36 +71,6 @@ const HeadToHead = ({ seasonseries, competitors }) => {
   )
 }
 
-const PlayByPlay = ({ plays }) => {
-  const [showAll, setShowAll] = useState(false)
-  if (!plays?.length) return null
-
-  const scoring = plays.filter((p) => p.scoringPlay).reverse()
-  const displayed = showAll ? scoring : scoring.slice(0, 10)
-  if (!displayed.length) return null
-
-  return (
-    <div className="pbp-section">
-      <h2 className="section-heading">Scoring Plays</h2>
-      <div className="pbp-list">
-        {displayed.map((play, i) => (
-          <div key={i} className="pbp-row">
-            <span className="pbp-period">{play.period?.displayValue}</span>
-            <span className="pbp-clock">{play.clock?.displayValue}</span>
-            <span className="pbp-text">{play.text}</span>
-            <span className="pbp-score">{play.awayScore}-{play.homeScore}</span>
-          </div>
-        ))}
-      </div>
-      {scoring.length > 10 && (
-        <button className="show-more-btn" onClick={() => setShowAll(!showAll)}>
-          {showAll ? "Show Less" : `Show All ${scoring.length} Scoring Plays`}
-        </button>
-      )}
-    </div>
-  )
-}
-
 const StatBox = ({ label, value }) => (
   <div className="stat-box">
     <span className="stat-value">{value ?? "-"}</span>
@@ -323,7 +293,6 @@ const GameDetail = () => {
   const noStats = !players.length || !players[0]?.statistics?.length
   const injuries = gameData?.injuries ?? []
   const seasonseries = gameData?.seasonseries ?? []
-  const plays = gameData?.plays ?? []
 
   return (
     <div className="content-holders game-detail">
@@ -365,7 +334,6 @@ const GameDetail = () => {
       ) : (
         <>
           <TopPerformers players={players} />
-          <PlayByPlay plays={plays} />
           <div className="game-detail-teams">
             {players.map((teamData, i) => <TeamSection key={i} teamData={teamData} />)}
           </div>
